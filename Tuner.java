@@ -1,5 +1,3 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Vector;
@@ -23,10 +21,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import pitchDetecto.PitchAnalyzer;
-import pitchDetecto.PitchCollection;
-import pitchDetecto.PitchDetector;
-import pitchDetecto.PitchSample;
+import pitchDetector.PitchAnalyzer;
+import pitchDetector.PitchCollection;
+import pitchDetector.PitchDetector;
+import pitchDetector.PitchSample;
 import soundDevice.JavaSESound;
 import soundDevice.SoundDevice;
 import soundDevice.SoundInfo;
@@ -92,7 +90,7 @@ public class Tuner {
 			SoundDevice sd = new JavaSESound(si);
 			// Initialize pitch detection engine
 			PitchDetector pd = new PitchDetector(sd);
-
+			
 			while (!shell.isDisposed()) {
 				if (!m_display.readAndDispatch()) {
 					// Read a sample - the pitch detector is subscribed and will get a copy
@@ -153,16 +151,10 @@ public class Tuner {
 		m_canvasMeter = new Canvas(m_meterAreaComposite, SWT.NONE);
 		m_canvasMeter.setLayoutData(new RowData(80, 300));
 		m_canvasMeter.addPaintListener(new MeterUpdateListener());
-		try {
-			InputStream is;
-			
-				is = Tuner.class.getResourceAsStream("resource/meter.gif");
-			
-			m_canvasMeter.setBackgroundImage(new Image(m_display, is));
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
+		
+		InputStream is = Tuner.class.getResourceAsStream("resource/meter.gif");
+		m_canvasMeter.setBackgroundImage(new Image(m_display, is));
+		
 		Composite textAreaComposite = new Composite(m_meterAreaComposite,
 				SWT.NONE);
 		RowLayout textAreaLayout = new RowLayout(SWT.VERTICAL);

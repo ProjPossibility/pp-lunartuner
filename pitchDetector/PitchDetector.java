@@ -6,6 +6,8 @@ import soundDevice.SoundDevice.*;
 import java.nio.ByteOrder;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 public class PitchDetector implements SampleListener {
 	
@@ -19,7 +21,7 @@ public class PitchDetector implements SampleListener {
 	private short[] m_audioBuf = null;
 	private double[] m_nsdf = null; 
 	private double[] m_dnsdf = null;
-	private double[] m_maxima = null;
+	private LinkedList m_maxima = null;
 	private BytesToShorts m_convBytes = null;
 	private double m_pitch;
 	
@@ -38,7 +40,7 @@ public class PitchDetector implements SampleListener {
 		m_audioBuf = new short[frameSize];
 		m_nsdf = new double[frameSize];
 		m_dnsdf = new double[frameSize];
-		m_maxima = new double[frameSize];
+		m_maxima = new LinkedList();
 		
 		if (m_soundDevice.getSoundInfo().getSampleDepth() == 8) {
 			m_convBytes = new NoConversion();
@@ -68,6 +70,12 @@ public class PitchDetector implements SampleListener {
 			for (int j = 0; j < m_audioBuf.length - tau; ++j) {
 				acf += m_audioBuf[j] * m_audioBuf[j + tau];
 				sdf += m_audioBuf[j] * m_audioBuf[j] + m_audioBuf[j + tau] * m_audioBuf[j + tau];
+			}
+			
+			if (sdf == 0) {
+				m_nsdf[tau] = 0;
+			}
+			else {
 				m_nsdf[tau] = (2.0f * acf) / sdf;
 			}
 			
@@ -76,11 +84,23 @@ public class PitchDetector implements SampleListener {
 			}	
 		}
 		
+		m_maxima.clear();
+		double highestPeak = 0;
+		for (int i = 0; i < m_dnsdf.length - 1; ++i) {
+			if (m_dnsdf[i] > 0 && m_dnsdf[i + 1] < 0) {
+				m_maxima.addLast(new Maxima(i, m_nsdf[i]));
+				if (m_nsdf[i] > highestPeak) {
+					highestPeak = m_nsdf[i];
+				}
+			}
+		}
+		
 		m_pitch = -1;
-		double highestPeak = getHighestPeak();
-		for (int i = 0; i < m_maxima.length; ++i) {
-			if (m_maxima[i] > 0.9 * highestPeak) {
-				m_pitch = m_soundDevice.getSoundInfo().getSampleRate() / i;
+		ListIterator i = m_maxima.listIterator();
+		while (i.hasNext()) {
+			Maxima m = (Maxima)i.next();
+			if (m.getValue() > 0.9 * highestPeak) {
+				m_pitch = m_soundDevice.getSoundInfo().getSampleRate() / m.getIndex();
 				break;
 			}
 		}		
@@ -108,24 +128,23 @@ public class PitchDetector implements SampleListener {
 	public InputStream getAudioStream() {
 		return m_sampleis;
 	}
-	
-	private double getHighestPeak() {
-		double highestPeak = 0;
-		for (int i = 0; i < m_dnsdf.length - 1; ++i) {
-			if (m_dnsdf[i] > 0
-					&& ((m_dnsdf[i] > 0 && m_dnsdf[i + 1] < 0) 
-					||  (m_dnsdf[i] < 0 && m_dnsdf[i + 1] > 0))) {
-				m_maxima[i] = m_nsdf[i];
-				if (m_maxima[i] > highestPeak) {
-					highestPeak = m_maxima[i];
-				}
-			}
-			else {
-				m_maxima[i] = Double.NEGATIVE_INFINITY;
-			}
+		
+	private static class Maxima {
+		private int m_index;
+		private double m_value;
+		
+		public Maxima(int index, double value) {
+			m_index = index;
+			m_value = value;
 		}
 		
-		return highestPeak;
+		public int getIndex() {
+			return m_index;
+		}
+		
+		public double getValue() {
+			return m_value;
+		}
 	}
 	
 	public interface BytesToShorts {
