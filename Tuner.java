@@ -23,10 +23,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import pitchDetector.PitchAnalyzer;
-import pitchDetector.PitchCollection;
-import pitchDetector.PitchDetector;
-import pitchDetector.PitchSample;
+import pitchDetecto.PitchAnalyzer;
+import pitchDetecto.PitchCollection;
+import pitchDetecto.PitchDetector;
+import pitchDetecto.PitchSample;
 import soundDevice.JavaSESound;
 import soundDevice.SoundDevice;
 import soundDevice.SoundInfo;
