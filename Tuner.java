@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import accessibility.AccessibleNotifier;
+
 import pitchDetector.PitchAnalyzer;
 import pitchDetector.PitchCollection;
 import pitchDetector.PitchDetector;
@@ -31,8 +33,13 @@ import soundDevice.SoundInfo;
 
 public class Tuner {
 
+	private static final String METER_IMAGE = "resource/meter.gif";
+	private static final int METER_DIMX = 93;
+	private static final int METER_DIMY = 350;
+	
 	private Display m_display = null;
 	private Canvas m_canvasMeter = null;
+	private Combo m_comboNotifyInterval = null;
 	private Combo m_comboInstrument = null;
 	private Combo m_comboNote = null;
 	private Label m_labelNoteHeard = null;
@@ -46,11 +53,14 @@ public class Tuner {
 	
 	private Vector<PitchCollection> m_instrumentList = new Vector<PitchCollection>();
 	
+	private AccessibleNotifier m_accessibleNotifier = null;
+	
 	public static void main(String[] args) {
 		new Tuner().run();
 	}
 
 	public void run() {
+
 		// Setup stuff for analysis
 		double rawSample;
 		PitchSample sample;
@@ -66,13 +76,13 @@ public class Tuner {
 		guitar.addPitch(new PitchSample("5A",45));
 		guitar.addPitch(new PitchSample("6E",40));
 
-		// Setup pitch collection for guitar
+		// Setup pitch collection for cello
 		PitchCollection cello = new PitchCollection();
 		cello.setName("Cello");
-		cello.addPitch(new PitchSample("1E",64));
-		cello.addPitch(new PitchSample("2B",59));
-		cello.addPitch(new PitchSample("3G",55));
-		cello.addPitch(new PitchSample("4D",50));
+		cello.addPitch(new PitchSample("1A",57));
+		cello.addPitch(new PitchSample("2D",50));
+		cello.addPitch(new PitchSample("3G",43));
+		cello.addPitch(new PitchSample("4C",36));
 
 		// Add guitar, cello to instruments
 		m_instrumentList.add(guitar);
@@ -83,6 +93,9 @@ public class Tuner {
 		Shell shell = new Shell(m_display);
 		setupDisplay(shell);
 		
+		// Initialize accessible notifier
+		m_accessibleNotifier = new AccessibleNotifier(shell);
+		
 		try {
 			// Define sampling properties
 			SoundInfo si = new SoundInfo(44100.0f, 16, 1, true, false, 4096);
@@ -90,6 +103,11 @@ public class Tuner {
 			SoundDevice sd = new JavaSESound(si);
 			// Initialize pitch detection engine
 			PitchDetector pd = new PitchDetector(sd);
+			
+			// Initialize temporary variables for holding messages/values
+			String noteHeard;
+			String noteError;
+			String noteInstructions;
 			
 			while (!shell.isDisposed()) {
 				if (!m_display.readAndDispatch()) {
@@ -105,25 +123,32 @@ public class Tuner {
 						m_canvasMeter.redraw();
 
 						// Update note heard text
-						m_labelNoteHeard.setText(sample.getPitchName());
+						noteHeard = sample.getPitchName();
+						m_labelNoteHeard.setText(noteHeard);
 						m_labelNoteHeard.update();
 						
 						// Update current error text
-						m_labelNoteError.setText(Math.round(m_currentError) + "%");
+						noteError = Math.round(m_currentError) + "%";
+						m_labelNoteError.setText(noteError);
 						m_labelNoteError.update();
 						
-						// Update instructions
+						// Update visible instructions
 						if (m_pitchAnalyzer.currentTuneNoteIsSet()) {
 							if(m_currentError > 10.0) {
-								m_labelNoteInstructions.setText("Tune Down");
+								noteInstructions = "Tune Down";
 							}
 							else if(m_currentError < -10.0) {
-								m_labelNoteInstructions.setText("Tune Up");
+								noteInstructions = "Tune Up";
 							}
 							else {
-								m_labelNoteInstructions.setText("Tuned!");
+								noteInstructions = "Tuned!";
 							}
+							m_labelNoteInstructions.setText(noteInstructions);
 							m_labelNoteInstructions.update();
+							m_accessibleNotifier.update(noteHeard, noteError, noteInstructions);
+						}
+						else {
+							m_accessibleNotifier.update(noteHeard, noteError);
 						}
 					}
 				}
@@ -139,7 +164,7 @@ public class Tuner {
 
 	private void setupDisplay(Shell shell) {
 
-		shell.setText("LunarTuner v0.1a");
+		shell.setText("LunarTuner v0.1");
 		shell.setLayout(new FillLayout(SWT.VERTICAL));
 
 		Composite mainWindow = new Composite(shell, SWT.NONE);
@@ -149,10 +174,10 @@ public class Tuner {
 
 		// Create the canvas to draw the line on
 		m_canvasMeter = new Canvas(m_meterAreaComposite, SWT.NONE);
-		m_canvasMeter.setLayoutData(new RowData(80, 300));
-		m_canvasMeter.addPaintListener(new MeterUpdateListener());
+		m_canvasMeter.setLayoutData(new RowData(METER_DIMX, METER_DIMY));
+		m_canvasMeter.addPaintListener(new MeterUpdateListener(METER_DIMX, METER_DIMY));
 		
-		InputStream is = Tuner.class.getResourceAsStream("resource/meter.gif");
+		InputStream is = Tuner.class.getResourceAsStream(METER_IMAGE);
 		m_canvasMeter.setBackgroundImage(new Image(m_display, is));
 		
 		Composite textAreaComposite = new Composite(m_meterAreaComposite,
@@ -162,10 +187,22 @@ public class Tuner {
 		textAreaComposite.setLayout(textAreaLayout);
 		textAreaComposite.setLayoutData(new RowData(150, 400));
 		
-		
 		// Create the input fields
+
+		// Add notification timing options
+		new Label(textAreaComposite, SWT.NONE).setText("Notify Interval in Seconds:");
+		m_comboNotifyInterval = new Combo(textAreaComposite, SWT.READ_ONLY);
+		m_comboNotifyInterval.addSelectionListener(new NotifyIntervalChangeListener());
+		m_comboNotifyInterval.add("Disabled");
+		m_comboNotifyInterval.add("15");
+		m_comboNotifyInterval.add("10");
+		m_comboNotifyInterval.add("5");
+		m_comboNotifyInterval.select(0);
+
+		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		
-		new Label(textAreaComposite, SWT.NONE).setText("Select Instrument:");
+		// Add Instruments
+		new Label(textAreaComposite, SWT.NONE).setText("Instrument:");
 		m_comboInstrument = new Combo(textAreaComposite, SWT.READ_ONLY);
 		m_comboInstrument.addSelectionListener(new InstrumentChangeListener());
 		m_comboInstrument.add("Automatic");
@@ -179,13 +216,15 @@ public class Tuner {
 		
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 
-		new Label(textAreaComposite, SWT.NONE).setText("Select Note:");
+		// Add Select Note area
+		new Label(textAreaComposite, SWT.NONE).setText("Note:");
 		m_comboNote = new Combo(textAreaComposite, SWT.READ_ONLY);
 		m_comboNote.addSelectionListener(new NoteTuneChangeListener());
 		m_comboNote.setEnabled(false);
 		
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 
+		// Add Note Heard area
 		new Label(textAreaComposite, SWT.NONE).setText("Note Heard:");
 		m_labelNoteHeard = new Label(textAreaComposite, SWT.NONE);
 		m_labelNoteHeard.setText("None");
@@ -198,6 +237,7 @@ public class Tuner {
 
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 
+		// Add Note Error area
 		new Label(textAreaComposite, SWT.NONE).setText("Note Error:");
 		m_labelNoteError = new Label(textAreaComposite, SWT.NONE);
 		m_labelNoteError.setText("                ");
@@ -205,6 +245,7 @@ public class Tuner {
 
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		
+		// Add Instructions area
 		new Label(textAreaComposite, SWT.NONE).setText("Instructions:");
 		m_labelNoteInstructions = new Label(textAreaComposite, SWT.NONE);
 		m_labelNoteInstructions.setText("                ");
@@ -215,6 +256,14 @@ public class Tuner {
 	}
 	
 	private class MeterUpdateListener implements PaintListener {
+		int m_xDim, m_yDim, m_lineWidth;
+		
+		public MeterUpdateListener(int xDim, int yDim) {
+			m_xDim = xDim;
+			m_yDim = yDim;
+			m_lineWidth = Math.round(yDim/100);
+		}
+		
 		public void paintControl(PaintEvent e) {
 			int y_pos;
 			
@@ -222,13 +271,13 @@ public class Tuner {
 				y_pos = 1;
 			}
 			else if (m_currentError < -75.0){
-				y_pos = 297;
+				y_pos = m_yDim - m_lineWidth;
 			}
 			else {
-				y_pos = (m_canvasMeter.getBounds().height / 2) - (int) (m_currentError * m_canvasMeter.getBounds().height / 150);
+				y_pos = (m_canvasMeter.getBounds().height / 2) - (int) (m_currentError * m_canvasMeter.getBounds().height / (m_yDim/2));
 			}
 
-			e.gc.setLineWidth(3);
+			e.gc.setLineWidth(m_lineWidth);
 			e.gc.setForeground(new Color(m_display, 255, 0, 0));
 			e.gc.drawLine(0, y_pos, m_canvasMeter.getBounds().width, y_pos);
 		}
@@ -262,6 +311,9 @@ public class Tuner {
 						selectedInstrument = currentInstrument;
 					}
 				}
+				// Remove all notes already in the note combo box
+				m_comboNote.removeAll();
+				
 				// Add all of the selected instrument's notes to the combo box
 				Iterator notes = selectedInstrument.getPitches();
 				while(notes.hasNext()) {
@@ -295,6 +347,25 @@ public class Tuner {
 					m_pitchAnalyzer.setCurrentTuneNote(currentPitch);
 				}
 			}
+			m_accessibleNotifier.resetTimer();
 		}
+	}
+	
+	private class NotifyIntervalChangeListener implements SelectionListener {
+
+		public void widgetDefaultSelected(SelectionEvent e) {
+			System.out.println("Default Notify Interval Selected: " + m_comboNotifyInterval.getText());
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			if(m_comboNotifyInterval.getText().equals("Disabled")) {
+				m_accessibleNotifier.setEnabled(false);
+			}
+			else {
+				m_accessibleNotifier.setEnabled(true);
+				m_accessibleNotifier.setInterval(Integer.parseInt(m_comboNotifyInterval.getText()) * 1000);
+			}
+		}
+		
 	}
 }
