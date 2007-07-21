@@ -92,7 +92,7 @@ public class HspDetector extends PitchDetector {
 				for (int k = 0; k < i; ++k) {
 					m_hspData[i][j] += m_hspData[0][j * i + k];
 				}
-				//m_hspData[i][j] /= i;
+				m_hspData[i][j] /= i;
 			}
 		}
 		
