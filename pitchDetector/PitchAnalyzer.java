@@ -55,6 +55,11 @@ public class PitchAnalyzer {
 		pitch = 69 + 12 * (Math.log10(sampleValue/440.0)/Math.log10(2));
 		nameIndex = (int)Math.round(pitch);
 		
+		// Set bounds for nameIndex so that we don't have array-out-of-bounds exception
+		if(nameIndex < 0 || nameIndex > PITCH_RANGE-1) {
+			nameIndex = 0;
+		}
+		
 		if(m_currentTuneNote == null) {
 			pitchErrorHz = sampleValue - m_pitchFreqMap[nameIndex];
 		}
