@@ -101,6 +101,7 @@ public class Tuner {
 			// Initialize sound device
 			SoundDevice sd = new JavaSESound(si);
 			// Initialize pitch detection engine
+			//PitchDetector pd = new NsdfDetector(sd);
 			PitchDetector pd = new HspDetector(sd);
 			
 			// Initialize temporary variables for holding messages/values
