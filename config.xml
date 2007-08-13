@@ -1,0 +1,6 @@
+<tuner>
+	<property name="tuner_algorithm" type="String">hsp</property>
+	<property name="preferred_instrument" type="String">Guitar</property>
+	<property name="notify_enabled" type="Boolean">true</property>
+	<property name="notify_interval" type="Integer">5</property>
+</tuner>
