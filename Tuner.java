@@ -33,7 +33,7 @@ import soundDevice.SoundDevice;
 import soundDevice.SoundInfo;
 
 public class Tuner {
-
+	
 	private static final String METER_IMAGE = "resource/meter.gif";
 	private static final int METER_DIMX = 93;
 	private static final int METER_DIMY = 350;
@@ -59,7 +59,7 @@ public class Tuner {
 	public static void main(String[] args) {
 		new Tuner().run();
 	}
-
+	
 	public void run() {
 
 		// Setup stuff for analysis
@@ -92,7 +92,7 @@ public class Tuner {
 		// Setup GUI
 		m_display = new Display();
 		Shell shell = new Shell(m_display);
-		setupDisplay(shell);
+		setupDisplay(m_display, shell);
 		
 		// Initialize accessible notifier
 		m_accessibleNotifier = new AccessibleNotifier(shell);
@@ -164,23 +164,23 @@ public class Tuner {
 		m_display.dispose();
 	}
 
-	private void setupDisplay(Shell shell) {
-
-		// Handle the close window event
-		shell.addListener(SWT.Close, new Listener() {
-			public void handleEvent(Event event) {
-				System.exit(0);
-			}
-		});
-		
+	private void setupDisplay(Display display, Shell shell) {
 		shell.addShellListener(
 			new ShellAdapter() {
-				public void shellClosed(ShellEvent event) {
+				public void shellClosed(ShellEvent e) {
 					System.exit(0);
 				}
 			}
 		);
-
+		
+		display.addListener(SWT.Close,  
+			new Listener() {
+				public void handleEvent(Event e) {
+					System.exit(0);
+				}
+			}
+		);
+		
 		shell.setText("LunarTuner v0.1");
 		shell.setLayout(new FillLayout(SWT.VERTICAL));
 

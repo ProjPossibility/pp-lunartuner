@@ -6,7 +6,8 @@ import misc.Fftw;
 public class HspDetector extends PitchDetector {
 	final private int PAD_FACTOR = 32;
 	final private int HARMONICS = 5;
-	final private int SAMPLE_AVG = 5;
+	final private int SAMPLE_AVG = 10;
+	final private double FREQ_MAX = 5000.0;
 	
 	private double[] m_sample = null;
 	private double[] m_fft = null;
@@ -17,6 +18,7 @@ public class HspDetector extends PitchDetector {
 	private int m_samplesPadded;
 	private int m_fftLen;
 	private double m_fftRes;
+	private int m_fftIdxMax;
 	
 	private double m_runAvg;
 	private int m_runAvgCount;
@@ -44,6 +46,8 @@ public class HspDetector extends PitchDetector {
 		m_runAvgCount = 0;
 		
 		calcFreqScale();
+		
+		m_fftIdxMax = (int)(FREQ_MAX / m_fftRes);
 	}
 	
 	private void calcFreqScale() {
@@ -60,22 +64,14 @@ public class HspDetector extends PitchDetector {
 		short[] shortAudioBuf;
 		
 		readSample();
-		/*
-		double dt = 1.0f / 44100.0f;
-		double t = 0.0f;
-		for (int i = 0; i < m_samples; ++i, t += dt) {
-			for (int j = 0; j < HARMONICS; ++j) {
-				m_sample[i] += (1.0f/((double)(j + 1))) * Math.sin((j + 1) * 110.0f * 2.0f * Math.PI * t);
-			}
-		}
-		*/
+		
 		// Get audio buffer from parent
 		shortAudioBuf = getAudioBuf();
 		
 		// Convert from int16 to double
 		// Maybe try to increase dynamic range with scaling?
 		for (int i = 0; i < m_samples; ++i) {
-			m_sample[i] = 20.f * shortAudioBuf[i];
+			m_sample[i] = shortAudioBuf[i];
 		}
 		
 		// Calculate fft (native call) and copy into hsp calc buffer
@@ -100,14 +96,14 @@ public class HspDetector extends PitchDetector {
 		// Multiply signal by resampled subsignals to amplify fundamental harmonic
 		System.arraycopy(m_hspData[0], 0, m_hsp, 0, m_fftLen);
 		for (int i = 1; i < HARMONICS; ++i) {
-			for (int j = 0; j < m_fftLen; ++j) {
+			for (int j = 0; j < m_fftIdxMax; ++j) {
 				m_hsp[j] *= m_hspData[i][j];
 			}
 		}
 		
 		// Find frequency with highest magnitude to get pitch
 		int maxIdx = 0;
-		for (int i = 1; i < m_fftLen; ++i) {
+		for (int i = 1; i < m_fftIdxMax; ++i) {
 			if (m_hsp[i] > m_hsp[maxIdx]) {
 				maxIdx = i;
 			}
@@ -119,7 +115,7 @@ public class HspDetector extends PitchDetector {
 	}
 	
 	double calcRunAvg(double curPitch) {
-		/*
+		
 		double diff;
 		// If large pitch shift restart averaging
 		diff = 1.0f - ((curPitch < getPitch()) ? curPitch/getPitch() : getPitch()/curPitch);
@@ -130,7 +126,7 @@ public class HspDetector extends PitchDetector {
 			m_runAvgOld = m_runAvgNew;
 			//System.out.println("Starting new avg " + diff);
 		}
-		*/
+		
 		// Do running average calcs
 		if (m_runAvgCount >= SAMPLE_AVG) {
 			m_runAvg -= m_runAvgArr[m_runAvgOld];
@@ -149,5 +145,17 @@ public class HspDetector extends PitchDetector {
 		else {
 			return (m_runAvg/((double)SAMPLE_AVG));
 		}
+	}
+	
+	private void createTestSample() {
+		/*
+		double dt = 1.0f / 44100.0f;
+		double t = 0.0f;
+		for (int i = 0; i < m_samples; ++i, t += dt) {
+			for (int j = 0; j < HARMONICS; ++j) {
+				m_sample[i] += (1.0f/((double)(j + 1))) * Math.sin((j + 1) * 110.0f * 2.0f * Math.PI * t);
+			}
+		}
+		*/
 	}
 }
