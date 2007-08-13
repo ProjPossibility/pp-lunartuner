@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 
 import accessibility.AccessibleNotifier;
 
@@ -171,6 +173,14 @@ public class Tuner {
 			}
 		});
 		
+		shell.addShellListener(
+			new ShellAdapter() {
+				public void shellClosed(ShellEvent event) {
+					System.exit(0);
+				}
+			}
+		);
+
 		shell.setText("LunarTuner v0.1");
 		shell.setLayout(new FillLayout(SWT.VERTICAL));
 

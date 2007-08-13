@@ -6,7 +6,7 @@ public class Fftw {
 	    	System.loadLibrary("fftw");
 		}
 	    catch (UnsatisfiedLinkError e) {
-	    	throw new UnsatisfiedLinkError("Fail to load jfftw3 library : " + e.getMessage());
+	    	throw new UnsatisfiedLinkError("Fail to load fftw library : " + e.getMessage());
 		}
 	}
 	

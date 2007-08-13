@@ -1,9 +1,0 @@
-JAVA_INC = /System/Library/Frameworks/JavaVM.framework/Versions/CurrentJDK/Home/include
-FFTW_INC = /sw/include
-CFLAGS = -Wall 
-INC = -I${JAVA_INC} -I${FFTW_INC}
-LIB = -lm
-
-all:
-	gcc ${CFLAGS} ${INC} ${LIB} -framework JavaVM -dynamiclib -o libfftw.jnilib libfftw3.a Fftw.c 
- 

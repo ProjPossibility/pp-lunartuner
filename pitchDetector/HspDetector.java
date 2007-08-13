@@ -7,6 +7,7 @@ public class HspDetector extends PitchDetector {
 	final private int PAD_FACTOR = 32;
 	final private int HARMONICS = 5;
 	final private int SAMPLE_AVG = 5;
+	
 	private double[] m_sample = null;
 	private double[] m_fft = null;
 	private double[] m_freqScale = null;
@@ -74,7 +75,7 @@ public class HspDetector extends PitchDetector {
 		// Convert from int16 to double
 		// Maybe try to increase dynamic range with scaling?
 		for (int i = 0; i < m_samples; ++i) {
-			m_sample[i] = shortAudioBuf[i];
+			m_sample[i] = 20.f * shortAudioBuf[i];
 		}
 		
 		// Calculate fft (native call) and copy into hsp calc buffer
@@ -114,12 +115,12 @@ public class HspDetector extends PitchDetector {
 		
 		//setPitch(m_freqScale[maxIdx]);
 		setPitch(calcRunAvg(m_freqScale[maxIdx]));
-		//System.out.println(getPitch());
+		System.out.println(getPitch() + "/" + m_fftRes);
 	}
 	
 	double calcRunAvg(double curPitch) {
+		/*
 		double diff;
-		
 		// If large pitch shift restart averaging
 		diff = 1.0f - ((curPitch < getPitch()) ? curPitch/getPitch() : getPitch()/curPitch);
 		
@@ -129,7 +130,7 @@ public class HspDetector extends PitchDetector {
 			m_runAvgOld = m_runAvgNew;
 			//System.out.println("Starting new avg " + diff);
 		}
-		
+		*/
 		// Do running average calcs
 		if (m_runAvgCount >= SAMPLE_AVG) {
 			m_runAvg -= m_runAvgArr[m_runAvgOld];
