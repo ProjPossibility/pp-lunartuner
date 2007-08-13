@@ -1,42 +1,11 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 import pitchDetector.*;
 import soundDevice.*;
@@ -133,15 +102,16 @@ public class Tuner {
 		m_shell = new Shell(m_display);
 		setupDisplay(m_display, m_shell);
 
+		ErrorDialog.setShell(m_shell);
+
 		try {
 			// Define sampling properties
 			SoundInfo si = new SoundInfo(44100.0f, 16, 1, true, false, 4096);
 			// Initialize sound device
 			SoundDevice sd = new JavaSESound(si);
 			// Initialize pitch detection engine
-			// PitchDetector pd = new NsdfDetector(sd);
-			PitchDetector pd = new HspDetector(sd);
 
+			PitchDetector pd = null;
 			if (TunerConf.getInstance().getString("tuner_algorithm").equals(
 					"hsp")) {
 				pd = new HspDetector(sd);
