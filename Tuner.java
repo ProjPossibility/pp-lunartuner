@@ -14,6 +14,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -22,6 +23,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 
@@ -33,7 +35,7 @@ import soundDevice.SoundDevice;
 import soundDevice.SoundInfo;
 
 public class Tuner {
-	
+
 	private static final String METER_IMAGE = "resource/meter.gif";
 	private static final int METER_DIMX = 93;
 	private static final int METER_DIMY = 350;
@@ -43,9 +45,10 @@ public class Tuner {
 	private Combo m_comboNotifyInterval = null;
 	private Combo m_comboInstrument = null;
 	private Combo m_comboNote = null;
-	private Label m_labelNoteHeard = null;
-	private Label m_labelNoteError = null;
-	private Label m_labelNoteInstructions = null;
+	private Text m_textNoteHeard = null;
+	private Text m_textNoteInstructions = null;
+	private Button m_buttonEnableNotify = null;
+	private Button m_buttonDisableNotify = null;
 	
 	private double m_currentError = 0;
 	private PitchCollection m_currentPitchCollection = null;
@@ -59,7 +62,7 @@ public class Tuner {
 	public static void main(String[] args) {
 		new Tuner().run();
 	}
-	
+
 	public void run() {
 
 		// Setup stuff for analysis
@@ -124,16 +127,12 @@ public class Tuner {
 						m_currentError = sample.getPitchErrorNormalized();
 						m_canvasMeter.redraw();
 
-						// Update note heard text
-						noteHeard = sample.getPitchName();
-						m_labelNoteHeard.setText(noteHeard);
-						m_labelNoteHeard.update();
-						
-						// Update current error text
-						noteError = Math.round(m_currentError) + "%";
-						m_labelNoteError.setText(noteError);
-						m_labelNoteError.update();
-						
+						// Update note heard and error text
+						noteHeard = sample.getExplicitPitchName();
+						noteError = Math.round(m_currentError) + "% error";
+						m_textNoteHeard.setText(noteHeard + " with " + noteError );
+						m_textNoteHeard.update();
+												
 						// Update visible instructions
 						if (m_pitchAnalyzer.currentTuneNoteIsSet()) {
 							if(m_currentError > 10.0) {
@@ -145,8 +144,8 @@ public class Tuner {
 							else {
 								noteInstructions = "Tuned!";
 							}
-							m_labelNoteInstructions.setText(noteInstructions);
-							m_labelNoteInstructions.update();
+							m_textNoteInstructions.setText(noteInstructions);
+							m_textNoteInstructions.update();
 							m_accessibleNotifier.update(noteHeard, noteError, noteInstructions);
 						}
 						else {
@@ -202,19 +201,33 @@ public class Tuner {
 		RowLayout textAreaLayout = new RowLayout(SWT.VERTICAL);
 		textAreaLayout.spacing = 8;
 		textAreaComposite.setLayout(textAreaLayout);
-		textAreaComposite.setLayoutData(new RowData(150, 400));
+		textAreaComposite.setLayoutData(new RowData(200, 400));
 		
 		// Create the input fields
 
+		new Label(textAreaComposite, SWT.NONE).setText("Notify:");
+	    m_buttonDisableNotify = new Button(textAreaComposite, SWT.RADIO);
+	    m_buttonEnableNotify = new Button(textAreaComposite, SWT.RADIO);
+	    m_buttonDisableNotify.setText("Disabled");
+	    m_buttonDisableNotify.setSelection(true);
+	    m_buttonEnableNotify.setText("Enabled");
+	    m_buttonEnableNotify.setSelection(false);
+	    m_buttonDisableNotify.addSelectionListener(new NotifyIntervalListener());
+	    m_buttonEnableNotify.addSelectionListener(new NotifyIntervalListener());
+
+	    //	    buttonEnableNotify.addSelectionListener(};
+	    
+	    new Label(textAreaComposite, SWT.NONE).setText("Notify Interval: ");
+	    
 		// Add notification timing options
-		new Label(textAreaComposite, SWT.NONE).setText("Notify Interval in Seconds:");
 		m_comboNotifyInterval = new Combo(textAreaComposite, SWT.READ_ONLY);
-		m_comboNotifyInterval.addSelectionListener(new NotifyIntervalChangeListener());
-		m_comboNotifyInterval.add("Disabled");
+		m_comboNotifyInterval.addSelectionListener(new NotifyIntervalListener());
 		m_comboNotifyInterval.add("15");
 		m_comboNotifyInterval.add("10");
 		m_comboNotifyInterval.add("5");
+		m_comboNotifyInterval.add("2");		
 		m_comboNotifyInterval.select(0);
+		m_comboNotifyInterval.setEnabled(false);
 
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 		
@@ -243,35 +256,25 @@ public class Tuner {
 
 		// Add Note Heard area
 		new Label(textAreaComposite, SWT.NONE).setText("Note Heard:");
-		m_labelNoteHeard = new Label(textAreaComposite, SWT.NONE);
-		m_labelNoteHeard.setText("None");
+		m_textNoteHeard = new Text(textAreaComposite, SWT.MULTI | SWT.READ_ONLY);
 		FontData fontData = new FontData();
-		fontData.setName("Courier New");
 		fontData.setStyle(SWT.BOLD);
-		fontData.setHeight(15);
 		Font font = new Font(m_display, fontData);
-		m_labelNoteHeard.setFont(font);
+		m_textNoteHeard.setFont(font);
+		m_textNoteHeard.setText("None                                     ");
 
 		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
 
-		// Add Note Error area
-		new Label(textAreaComposite, SWT.NONE).setText("Note Error:");
-		m_labelNoteError = new Label(textAreaComposite, SWT.NONE);
-		m_labelNoteError.setText("                ");
-		m_labelNoteError.setFont(font);
-
-		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
-		
 		// Add Instructions area
 		new Label(textAreaComposite, SWT.NONE).setText("Instructions:");
-		m_labelNoteInstructions = new Label(textAreaComposite, SWT.NONE);
-		m_labelNoteInstructions.setText("                ");
-		m_labelNoteInstructions.setFont(font);
+		m_textNoteInstructions = new Text(textAreaComposite, SWT.SINGLE | SWT.READ_ONLY);
+		m_textNoteInstructions.setText("                                       ");
+		m_textNoteInstructions.setFont(font);
 
 		shell.pack();
 		shell.open();
 	}
-	
+		
 	private class MeterUpdateListener implements PaintListener {
 		int m_xDim, m_yDim, m_lineWidth;
 		
@@ -315,8 +318,8 @@ public class Tuner {
 				// Update
 				m_currentPitchCollection = null;
 				m_pitchAnalyzer.resetCurrentTuneNote();
-				m_labelNoteInstructions.setText("                ");
-				m_labelNoteInstructions.update();
+				m_textNoteInstructions.setText("                ");
+				m_textNoteInstructions.update();
 			}
 			else {
 				// Look for the instrument selected
@@ -368,17 +371,19 @@ public class Tuner {
 		}
 	}
 	
-	private class NotifyIntervalChangeListener implements SelectionListener {
+	private class NotifyIntervalListener implements SelectionListener {
 
 		public void widgetDefaultSelected(SelectionEvent e) {
 			System.out.println("Default Notify Interval Selected: " + m_comboNotifyInterval.getText());
 		}
 
 		public void widgetSelected(SelectionEvent e) {
-			if(m_comboNotifyInterval.getText().equals("Disabled")) {
+			if(m_buttonDisableNotify.getSelection()) {
 				m_accessibleNotifier.setEnabled(false);
+				m_comboNotifyInterval.setEnabled(false);
 			}
 			else {
+				m_comboNotifyInterval.setEnabled(true);
 				m_accessibleNotifier.setEnabled(true);
 				m_accessibleNotifier.setInterval(Integer.parseInt(m_comboNotifyInterval.getText()) * 1000);
 			}
