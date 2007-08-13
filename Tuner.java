@@ -1,14 +1,42 @@
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.layout.*;
-import org.eclipse.swt.widgets.*;
-//import org.eclipse.swt.events.*;
-
-import accessibility.AccessibleNotifier;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 
 import pitchDetector.*;
 import soundDevice.*;
@@ -23,11 +51,9 @@ public class Tuner {
 	private static final int METER_DIMY = 350;
 
 	private Display m_display = null;
-
+	private Shell m_shell = null;
 	private Canvas m_canvasMeter = null;
-
-	private Combo m_comboNotifyInterval = null;
-
+	private Spinner m_spinnerNotifyInterval = null;
 	private Combo m_comboInstrument = null;
 
 	private Combo m_comboNote = null;
@@ -48,7 +74,11 @@ public class Tuner {
 
 	private Vector<PitchCollection> m_instrumentList = new Vector<PitchCollection>();
 
-	private AccessibleNotifier m_accessibleNotifier = null;
+	// For the interval notifier
+	boolean m_intervalEnabled = false;
+	long m_intervalLength = 10000;
+	long m_intervalLastNotification = 0;
+	Shell m_notifyShell = null;
 
 	public static void main(String[] args) {
 		try {
@@ -100,13 +130,8 @@ public class Tuner {
 
 		// Setup GUI
 		m_display = new Display();
-		Shell shell = new Shell(m_display);
-		setupDisplay(m_display, shell);
-		
-		ErrorDialog.setShell(shell);
-		
-		// Initialize accessible notifier
-		m_accessibleNotifier = new AccessibleNotifier(shell);
+		m_shell = new Shell(m_display);
+		setupDisplay(m_display, m_shell);
 
 		try {
 			// Define sampling properties
@@ -114,17 +139,18 @@ public class Tuner {
 			// Initialize sound device
 			SoundDevice sd = new JavaSESound(si);
 			// Initialize pitch detection engine
-			
-			PitchDetector pd = null;
-			if (TunerConf.getInstance().getString("tuner_algorithm").equals("hsp")) {
+			// PitchDetector pd = new NsdfDetector(sd);
+			PitchDetector pd = new HspDetector(sd);
+
+			if (TunerConf.getInstance().getString("tuner_algorithm").equals(
+					"hsp")) {
 				pd = new HspDetector(sd);
-			}
-			else
-			if (TunerConf.getInstance().getString("tuner_algorithm").equals("nsdf")) {
+			} else if (TunerConf.getInstance().getString("tuner_algorithm")
+					.equals("nsdf")) {
 				pd = new NsdfDetector(sd);
-			}
-			else {
-				ErrorDialog.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
+			} else {
+				ErrorDialog
+						.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
 				System.exit(1);
 			}
 
@@ -133,7 +159,7 @@ public class Tuner {
 			String noteError;
 			String noteInstructions;
 
-			while (!shell.isDisposed()) {
+			while (!m_shell.isDisposed()) {
 				if (!m_display.readAndDispatch()) {
 					// Read a sample - the pitch detector is subscribed and will
 					// get a copy
@@ -166,10 +192,10 @@ public class Tuner {
 							}
 							m_textNoteInstructions.setText(noteInstructions);
 							m_textNoteInstructions.update();
-							m_accessibleNotifier.update(noteHeard, noteError,
+							updateInterval(noteHeard, noteError,
 									noteInstructions);
 						} else {
-							m_accessibleNotifier.update(noteHeard, noteError);
+							updateIntervalTimer(noteHeard, noteError);
 						}
 					}
 				}
@@ -198,62 +224,132 @@ public class Tuner {
 		shell.setText("LunarTuner v0.1");
 		shell.setLayout(new FillLayout(SWT.VERTICAL));
 
+		// ------ File, help menu test ------
+		Menu menuBar, fileMenu, helpMenu;
+		MenuItem fileMenuHeader, helpMenuHeader;
+		MenuItem fileExitItem, fileSaveItem, helpHelpItem, helpAboutItem;
+
+		menuBar = new Menu(shell, SWT.BAR);
+		fileMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
+		fileMenuHeader.setText("&File");
+
+		fileMenu = new Menu(shell, SWT.DROP_DOWN);
+		fileMenuHeader.setMenu(fileMenu);
+
+		fileExitItem = new MenuItem(fileMenu, SWT.PUSH);
+		fileExitItem.setText("E&xit");
+
+		helpMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
+		helpMenuHeader.setText("&Help");
+
+		helpMenu = new Menu(shell, SWT.DROP_DOWN);
+		helpMenuHeader.setMenu(helpMenu);
+
+		helpHelpItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpHelpItem.setText("&Help");
+
+		helpAboutItem = new MenuItem(helpMenu, SWT.PUSH);
+		helpAboutItem.setText("&About");
+
+		fileExitItem.addSelectionListener(new fileExitItemListener());
+		helpHelpItem.addSelectionListener(new helpHelpItemListener());
+		helpAboutItem.addSelectionListener(new helpAboutItemListener());
+
+		shell.setMenuBar(menuBar);
+
+		// ------- End File, help menu test ----------
+
 		Composite mainWindow = new Composite(shell, SWT.NONE);
-		mainWindow.setLayout(new RowLayout(SWT.VERTICAL));
+		GridLayout mainLayout = new GridLayout();
+		mainLayout.numColumns = 2;
+		mainWindow.setLayout(mainLayout);
 		Composite m_meterAreaComposite = new Composite(mainWindow, SWT.NONE);
-		m_meterAreaComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+
+		// Generic 1-column layout
+		GridLayout oneColumnGridLayout = new GridLayout();
+		oneColumnGridLayout.numColumns = 1;
+		oneColumnGridLayout.verticalSpacing = 10;
 
 		// Create the canvas to draw the line on
+		GridData canvasLayoutData = new GridData(
+				GridData.HORIZONTAL_ALIGN_BEGINNING
+						| GridData.VERTICAL_ALIGN_BEGINNING);
+		canvasLayoutData.heightHint = METER_DIMY + 10;
+		canvasLayoutData.widthHint = METER_DIMX + 10;
+
+		GridData canvasLayoutData2 = new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.GRAB_VERTICAL);
+		canvasLayoutData2.minimumHeight = METER_DIMY;
+		canvasLayoutData2.minimumWidth = METER_DIMX;
+
+		m_meterAreaComposite.setLayout(oneColumnGridLayout);
+		m_meterAreaComposite.setLayoutData(canvasLayoutData);
 		m_canvasMeter = new Canvas(m_meterAreaComposite, SWT.NONE);
-		m_canvasMeter.setLayoutData(new RowData(METER_DIMX, METER_DIMY));
+		m_canvasMeter.setLayoutData(canvasLayoutData2);
 		m_canvasMeter.addPaintListener(new MeterUpdateListener(METER_DIMX,
 				METER_DIMY));
 
 		InputStream is = Tuner.class.getResourceAsStream(METER_IMAGE);
 		m_canvasMeter.setBackgroundImage(new Image(m_display, is));
 
-		Composite textAreaComposite = new Composite(m_meterAreaComposite,
-				SWT.NONE);
-		RowLayout textAreaLayout = new RowLayout(SWT.VERTICAL);
-		textAreaLayout.spacing = 8;
-		textAreaComposite.setLayout(textAreaLayout);
-		textAreaComposite.setLayoutData(new RowData(200, 400));
+		// Create the form area to put all the form items into
+		Composite formAreaComposite = new Composite(mainWindow, SWT.NONE);
+		formAreaComposite.setLayout(oneColumnGridLayout);
+		GridData formAreaLayoutData = new GridData(GridData.FILL_BOTH);
+		formAreaLayoutData.minimumWidth = 150;
+		formAreaLayoutData.minimumHeight = METER_DIMY;
+		formAreaComposite.setLayoutData(formAreaLayoutData);
 
-		// Create the input fields
+		// Create generic grid layout
+		GridLayout twoColumnGridLayout = new GridLayout();
+		twoColumnGridLayout.numColumns = 2;
+		twoColumnGridLayout.horizontalSpacing = 8;
+		twoColumnGridLayout.verticalSpacing = 8;
+		twoColumnGridLayout.marginHeight = 10;
+		twoColumnGridLayout.marginWidth = 8;
 
-		new Label(textAreaComposite, SWT.NONE).setText("Notify:");
-		m_buttonDisableNotify = new Button(textAreaComposite, SWT.RADIO);
-		m_buttonEnableNotify = new Button(textAreaComposite, SWT.RADIO);
-		m_buttonDisableNotify.setText("Disabled");
-		m_buttonDisableNotify.setSelection(true);
-		m_buttonEnableNotify.setText("Enabled");
-		m_buttonEnableNotify.setSelection(false);
-		m_buttonDisableNotify
-				.addSelectionListener(new NotifyIntervalListener());
-		m_buttonEnableNotify.addSelectionListener(new NotifyIntervalListener());
+		// Create status area
+		Group m_statusGroup = new Group(formAreaComposite, SWT.NONE);
+		m_statusGroup.setText("Status");
+		m_statusGroup.setLayout(oneColumnGridLayout);
+		m_statusGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		// buttonEnableNotify.addSelectionListener(};
+		// Create heard area
+		new Label(m_statusGroup, SWT.NONE).setText("Note Heard:");
+		m_textNoteHeard = new Text(m_statusGroup, SWT.SINGLE | SWT.READ_ONLY);
+		// m_textNoteHeard.setLayoutData(new RowData(180,20));
+		FontData fontData = new FontData();
+		fontData.setStyle(SWT.BOLD);
+		Font font = new Font(m_display, fontData);
+		m_textNoteHeard.setFont(font);
+		m_textNoteHeard.setText("None");
+		m_textNoteHeard.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		new Label(textAreaComposite, SWT.NONE).setText("Notify Interval: ");
+		// Add Instructions area
+		new Label(m_statusGroup, SWT.NONE).setText("Instructions:");
+		m_textNoteInstructions = new Text(m_statusGroup, SWT.SINGLE
+				| SWT.READ_ONLY);
+		// m_textNoteInstructions.setLayoutData(new RowData(180,20));
+		m_textNoteInstructions.setText("None");
+		m_textNoteInstructions.setFont(font);
+		m_textNoteInstructions.setLayoutData(new GridData(
+				GridData.FILL_HORIZONTAL));
 
-		// Add notification timing options
-		m_comboNotifyInterval = new Combo(textAreaComposite, SWT.READ_ONLY);
-		m_comboNotifyInterval
-				.addSelectionListener(new NotifyIntervalListener());
-		m_comboNotifyInterval.add("15");
-		m_comboNotifyInterval.add("10");
-		m_comboNotifyInterval.add("5");
-		m_comboNotifyInterval.add("2");
-		m_comboNotifyInterval.select(0);
-		m_comboNotifyInterval.setEnabled(false);
+		// Create instrument group
+		Group m_instrumentGroup = new Group(formAreaComposite, SWT.NONE);
+		m_instrumentGroup.setText("Instrument");
+		m_instrumentGroup.setLayout(twoColumnGridLayout);
+		m_instrumentGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		// Create name label
+		new Label(m_instrumentGroup, SWT.NONE).setText("Name:");
 
-		// Add Instruments
-		new Label(textAreaComposite, SWT.NONE).setText("Instrument:");
-		m_comboInstrument = new Combo(textAreaComposite, SWT.READ_ONLY);
+		// Create instrument combo box
+		m_comboInstrument = new Combo(m_instrumentGroup, SWT.READ_ONLY);
 		m_comboInstrument.addSelectionListener(new InstrumentChangeListener());
 		m_comboInstrument.add("Automatic");
+		m_comboInstrument.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
 		// For each instrument, add the instrument to the combo box
 		Iterator instruments = m_instrumentList.iterator();
 		while (instruments.hasNext()) {
@@ -262,37 +358,88 @@ public class Tuner {
 		}
 		m_comboInstrument.select(0);
 
-		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		// Create note label
+		new Label(m_instrumentGroup, SWT.NONE).setText("Note:");
 
-		// Add Select Note area
-		new Label(textAreaComposite, SWT.NONE).setText("Note:");
-		m_comboNote = new Combo(textAreaComposite, SWT.READ_ONLY);
+		// Create note combo box
+		m_comboNote = new Combo(m_instrumentGroup, SWT.READ_ONLY);
 		m_comboNote.addSelectionListener(new NoteTuneChangeListener());
 		m_comboNote.setEnabled(false);
+		m_comboNote.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		// Create the notify group
+		Group m_notifyGroup = new Group(formAreaComposite, SWT.NONE);
+		m_notifyGroup.setText("Notify Settings");
+		m_notifyGroup.setLayout(twoColumnGridLayout);
+		m_notifyGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		// Add Note Heard area
-		new Label(textAreaComposite, SWT.NONE).setText("Note Heard:");
-		m_textNoteHeard = new Text(textAreaComposite, SWT.MULTI | SWT.READ_ONLY);
-		FontData fontData = new FontData();
-		fontData.setStyle(SWT.BOLD);
-		Font font = new Font(m_display, fontData);
-		m_textNoteHeard.setFont(font);
-		m_textNoteHeard.setText("None                                     ");
+		// Create generic grid data for horizontal span=2
+		GridData gridDataColSpan2 = new GridData();
+		gridDataColSpan2.horizontalSpan = 2;
 
-		new Label(textAreaComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+		// Create notify radio buttons
+		m_buttonDisableNotify = new Button(m_notifyGroup, SWT.RADIO);
+		m_buttonDisableNotify.setLayoutData(gridDataColSpan2);
+		m_buttonDisableNotify.setText("Disable Interval Notify");
+		m_buttonDisableNotify.setSelection(true);
+		m_buttonDisableNotify
+				.addSelectionListener(new NotifyIntervalListener());
 
-		// Add Instructions area
-		new Label(textAreaComposite, SWT.NONE).setText("Instructions:");
-		m_textNoteInstructions = new Text(textAreaComposite, SWT.SINGLE
-				| SWT.READ_ONLY);
-		m_textNoteInstructions
-				.setText("                                       ");
-		m_textNoteInstructions.setFont(font);
+		// Create generic grid data for horizontal span=2
+		gridDataColSpan2 = new GridData();
+		gridDataColSpan2.horizontalSpan = 2;
+
+		m_buttonEnableNotify = new Button(m_notifyGroup, SWT.RADIO);
+		m_buttonEnableNotify.setLayoutData(gridDataColSpan2);
+		m_buttonEnableNotify.setText("Enable Inverval Notify");
+		m_buttonEnableNotify.setSelection(false);
+		m_buttonEnableNotify.addSelectionListener(new NotifyIntervalListener());
+
+		// Create notify interval label
+		new Label(m_notifyGroup, SWT.NONE).setText("Interval in Seconds: ");
+
+		// Create notify interval spinner box
+		m_spinnerNotifyInterval = new Spinner(m_notifyGroup, SWT.NONE);
+		m_spinnerNotifyInterval
+				.addSelectionListener(new NotifyIntervalListener());
+		m_spinnerNotifyInterval.setValues(15, 2, 15, 0, 1, 5);
+		m_spinnerNotifyInterval.setEnabled(false);
 
 		shell.pack();
 		shell.open();
+
+	}
+
+	private class fileExitItemListener implements SelectionListener {
+		public void widgetSelected(SelectionEvent event) {
+			m_shell.close();
+			m_display.dispose();
+		}
+
+		public void widgetDefaultSelected(SelectionEvent event) {
+			m_shell.close();
+			m_display.dispose();
+		}
+	}
+
+	private class helpHelpItemListener implements SelectionListener {
+		public void widgetSelected(SelectionEvent event) {
+			// label.setText("No worries!");
+		}
+
+		public void widgetDefaultSelected(SelectionEvent event) {
+			// label.setText("No worries!");
+		}
+	}
+
+	private class helpAboutItemListener implements SelectionListener {
+		public void widgetSelected(SelectionEvent event) {
+			// label.setText("No worries!");
+		}
+
+		public void widgetDefaultSelected(SelectionEvent event) {
+			// label.setText("No worries!");
+		}
 	}
 
 	private class MeterUpdateListener implements PaintListener {
@@ -391,7 +538,7 @@ public class Tuner {
 					m_pitchAnalyzer.setCurrentTuneNote(currentPitch);
 				}
 			}
-			m_accessibleNotifier.resetTimer();
+			resetIntervalTimer();
 		}
 	}
 
@@ -399,19 +546,92 @@ public class Tuner {
 
 		public void widgetDefaultSelected(SelectionEvent e) {
 			System.out.println("Default Notify Interval Selected: "
-					+ m_comboNotifyInterval.getText());
+					+ m_spinnerNotifyInterval.getSelection());
 		}
 
 		public void widgetSelected(SelectionEvent e) {
 			if (m_buttonDisableNotify.getSelection()) {
-				m_accessibleNotifier.setEnabled(false);
-				m_comboNotifyInterval.setEnabled(false);
+				setEnabled(false);
+				m_spinnerNotifyInterval.setEnabled(false);
 			} else {
-				m_comboNotifyInterval.setEnabled(true);
-				m_accessibleNotifier.setEnabled(true);
-				m_accessibleNotifier.setInterval(Integer
-						.parseInt(m_comboNotifyInterval.getText()) * 1000);
+				m_spinnerNotifyInterval.setEnabled(true);
+				setEnabled(true);
+				setInterval(m_spinnerNotifyInterval.getSelection() * 1000);
 			}
+		}
+
+	}
+
+	/*
+	 * All the code below is related to the accessible INNTERVAL messages that
+	 * appear when interval notify is enabled.
+	 * 
+	 * As of current revision (24) the accessibility package has been migrated
+	 * into Tuner.java
+	 */
+
+	public void resetIntervalTimer() {
+		m_intervalLastNotification = new Date().getTime();
+	}
+
+	public void updateIntervalTimer(String noteHeard, String noteError) {
+		if (new Date().getTime() - m_intervalLastNotification > m_intervalLength
+				&& m_intervalEnabled) {
+			throwMessageBox("I heard " + noteHeard + " with " + noteError);
+			m_intervalLastNotification = new Date().getTime();
+		}
+	}
+
+	public void setInterval(long interval) {
+		m_intervalLength = interval;
+	}
+
+	public void setEnabled(boolean enabled) {
+		m_intervalEnabled = enabled;
+		m_intervalLastNotification = new Date().getTime();
+	}
+
+	public void updateInterval(String noteHeard, String noteError,
+			String noteInstructions) {
+		if (new Date().getTime() - m_intervalLastNotification > m_intervalLength
+				&& m_intervalEnabled) {
+			m_intervalLastNotification = new Date().getTime();
+			throwMessageBox(noteError + ". " + noteInstructions);
+		}
+	}
+
+	public void throwMessageBox(String message) {
+
+		if (m_notifyShell != null) {
+			m_notifyShell.close();
+			m_notifyShell = null;
+		}
+		m_notifyShell = new Shell(m_display);
+		m_notifyShell.setLayout(new RowLayout());
+		Button stop = new Button(m_notifyShell, SWT.PUSH);
+		stop.setLayoutData(new RowData(600, 100));
+		stop.setText("Stop");
+		stop.addSelectionListener(new IntervalStopSelectionListener());
+
+		m_notifyShell.setText(message);
+		m_notifyShell.pack();
+		m_notifyShell.open();
+	}
+
+	private class IntervalStopSelectionListener implements SelectionListener {
+
+		public void widgetDefaultSelected(SelectionEvent e) {
+			// Do nothing
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			m_notifyShell.close();
+			m_notifyShell = null;
+			setEnabled(false);
+			m_buttonEnableNotify.setSelection(false);
+			m_buttonDisableNotify.setSelection(true);
+			m_spinnerNotifyInterval.setEnabled(false);
+			m_buttonDisableNotify.setFocus();
 		}
 
 	}
