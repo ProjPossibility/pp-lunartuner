@@ -24,6 +24,20 @@ public class PitchSample {
 		return m_pitchName;
 	}
 
+	public String getExplicitPitchName() {
+		String explicitNoteHeard = m_pitchName;;
+		
+		if (m_pitchName.length() > 1) {
+			if(m_pitchName.charAt(1) == 'b') {
+				explicitNoteHeard = m_pitchName.charAt(0) + " flat";
+			}
+			else{
+				explicitNoteHeard = m_pitchName.charAt(0) + " sharp";
+			}
+		}
+		return explicitNoteHeard;
+	}
+	
 	public double getPitchFreq() {
 		return m_pitchFreq;
 	}
