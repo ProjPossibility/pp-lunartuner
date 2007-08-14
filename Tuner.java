@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
@@ -18,6 +19,9 @@ public class Tuner {
 	private static final int METER_DIMX = 93;
 
 	private static final int METER_DIMY = 350;
+
+	private static final String HELP_FILE = "resource/help.htm";
+	private static final String ABOUT_FILE = "resource/about.htm";
 
 	private Display m_display = null;
 	private Shell m_shell = null;
@@ -197,7 +201,7 @@ public class Tuner {
 		// ------ File, help menu test ------
 		Menu menuBar, fileMenu, helpMenu;
 		MenuItem fileMenuHeader, helpMenuHeader;
-		MenuItem fileExitItem, fileSaveItem, helpHelpItem, helpAboutItem;
+		MenuItem fileExitItem, helpHelpItem, helpAboutItem;
 
 		menuBar = new Menu(shell, SWT.BAR);
 		fileMenuHeader = new MenuItem(menuBar, SWT.CASCADE);
@@ -394,22 +398,33 @@ public class Tuner {
 
 	private class helpHelpItemListener implements SelectionListener {
 		public void widgetSelected(SelectionEvent event) {
-			// label.setText("No worries!");
+			showUrl(getCurrentDir() + "/" + HELP_FILE);
 		}
 
 		public void widgetDefaultSelected(SelectionEvent event) {
-			// label.setText("No worries!");
+			showUrl(getCurrentDir() + "/" + HELP_FILE);
 		}
 	}
 
 	private class helpAboutItemListener implements SelectionListener {
 		public void widgetSelected(SelectionEvent event) {
-			// label.setText("No worries!");
+			showUrl(getCurrentDir() + "/" + ABOUT_FILE);
 		}
 
 		public void widgetDefaultSelected(SelectionEvent event) {
-			// label.setText("No worries!");
+			showUrl(getCurrentDir() + "/" + ABOUT_FILE);
 		}
+	}
+	
+	private void showUrl(String url) {
+		Shell urlShell = new Shell(m_display);
+		urlShell.setLayout(new RowLayout());
+		Browser browser = new Browser(urlShell, SWT.NONE);
+		browser.setLayoutData(new RowData(400, 600));
+		browser.setUrl(url);
+		urlShell.setText("LunarTuner Help");
+		urlShell.pack();
+		urlShell.open();
 	}
 
 	private class MeterUpdateListener implements PaintListener {
@@ -573,7 +588,9 @@ public class Tuner {
 	public void throwMessageBox(String message) {
 
 		if (m_notifyShell != null) {
-			m_notifyShell.close();
+			if(!m_notifyShell.isDisposed()) {
+				m_notifyShell.close();
+			}
 			m_notifyShell = null;
 		}
 		m_notifyShell = new Shell(m_display);
@@ -582,27 +599,46 @@ public class Tuner {
 		stop.setLayoutData(new RowData(600, 100));
 		stop.setText("Stop");
 		stop.addSelectionListener(new IntervalStopSelectionListener());
-
+		stop.addDisposeListener(new IntervalStopSelectionListener());
 		m_notifyShell.setText(message);
 		m_notifyShell.pack();
 		m_notifyShell.open();
 	}
 
-	private class IntervalStopSelectionListener implements SelectionListener {
+	private class IntervalStopSelectionListener implements SelectionListener, DisposeListener {
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			// Do nothing
+			disableNotify();
 		}
 
 		public void widgetSelected(SelectionEvent e) {
 			m_notifyShell.close();
+			disableNotify();
+		}
+
+		public void widgetDisposed(DisposeEvent e) {
+			disableNotify();
+		}
+
+		private void disableNotify() {
 			m_notifyShell = null;
 			setEnabled(false);
 			m_buttonEnableNotify.setSelection(false);
 			m_buttonDisableNotify.setSelection(true);
 			m_spinnerNotifyInterval.setEnabled(false);
-			m_buttonDisableNotify.setFocus();
+			m_buttonDisableNotify.setFocus();			
 		}
-
+	}
+	
+	private String getCurrentDir() {
+		File dir1 = new File(".");
+		String currentDir = null;
+		try {
+			currentDir = dir1.getCanonicalPath();
+		} catch (IOException e) {
+			System.out.println("Couldn't access the current directory");
+			e.printStackTrace();
+		}
+		return currentDir;
 	}
 }
