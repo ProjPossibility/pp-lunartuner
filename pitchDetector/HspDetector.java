@@ -147,15 +147,4 @@ public class HspDetector extends PitchDetector {
 		}
 	}
 	
-	private void createTestSample() {
-		/*
-		double dt = 1.0f / 44100.0f;
-		double t = 0.0f;
-		for (int i = 0; i < m_samples; ++i, t += dt) {
-			for (int j = 0; j < HARMONICS; ++j) {
-				m_sample[i] += (1.0f/((double)(j + 1))) * Math.sin((j + 1) * 110.0f * 2.0f * Math.PI * t);
-			}
-		}
-		*/
-	}
 }

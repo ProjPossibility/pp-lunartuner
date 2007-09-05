@@ -1,6 +1,5 @@
 package misc;
 
-import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.*;
 
 public class ErrorDialog {

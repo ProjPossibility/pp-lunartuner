@@ -1,9 +1,7 @@
 package soundDevice;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
 public abstract class SoundDevice {
 	
@@ -11,7 +9,7 @@ public abstract class SoundDevice {
 	private byte[] m_sampleBuf = null;
 	private Vector m_outStreams = null;
 	private Vector m_inStreams = null;
-		
+	
 	public SoundDevice(SoundInfo soundInfo) throws SoundDeviceException {
 		if (soundInfo.getSampleDepth() != 8 && soundInfo.getSampleDepth() != 16) {
 			throw new SoundDeviceException("Invalid sample depth");
@@ -24,10 +22,11 @@ public abstract class SoundDevice {
 		m_sampleBuf = new byte[getSoundInfo().getFrameSize() * (getSoundInfo().getSampleDepth() / 8)];
 	}
 	
-	public abstract void readSample() throws SoundDeviceException;	
+	public abstract void readSample() throws SoundDeviceException;
+	public abstract void writeSample(byte sampleBuf[]) throws SoundDeviceException;
 	
 	public abstract void addListener(SampleListener listener) throws SoundDeviceException;
-
+	
 	public void removeListener(SampleListener listener) {
 		for (int i = 0; i < m_inStreams.size(); ++i) {
 			if (m_inStreams.elementAt(i) == listener.getAudioStream()) {
@@ -43,6 +42,7 @@ public abstract class SoundDevice {
 	
 	public void setSoundInfo(SoundInfo soundInfo) {
 		m_soundInfo = soundInfo;
+
 	}
 	
 	public int getSampleBufLength() {
@@ -54,7 +54,7 @@ public abstract class SoundDevice {
 		m_inStreams.add(is);
 		m_outStreams.add(os);
 	}
-		
+	
 	protected void writeToListeners() throws SoundDeviceException {
 		try {
 			for (int i = 0; i < m_outStreams.size(); ++i) {
@@ -68,6 +68,35 @@ public abstract class SoundDevice {
 	
 	protected byte[] getSampleBuf() {
 		return m_sampleBuf;
+	}
+	
+	public byte[] createTone(double f, double seconds) throws SoundDeviceException {
+		if (getSoundInfo().getSampleDepth() != 16) {
+			throw new SoundDeviceException("Only 16 bit tone generation currently supported");
+		}
+		
+		double t = 0.0f;
+		double dt = 1.0f / getSoundInfo().getSampleRate();
+		
+		int m_len = (int)Math.ceil(seconds / dt);
+		m_len += m_len % getSoundInfo().getFrameSize(); // Pad buffer to be a multiple of frame size
+		
+		byte[] m_toneBuf = new byte[m_len];
+		
+		for (int i = 0; i < m_len; i += 2, t += dt) {
+			// Generate the tone. Have the amplitude be 2/3 of the maximum
+			short tone = (short)Math.round( (2.0f/3.0f) * Short.MAX_VALUE * Math.sin(f * 2.0f * Math.PI * t) );
+			if (getSoundInfo().getSampleBigEndian()) {
+				m_toneBuf[i] = (byte)((tone & 0xFF00) >> 8);
+				m_toneBuf[i + 1] = (byte)(tone & 0x00FF);
+			}
+			else {
+				m_toneBuf[i] = (byte)(tone & 0x00FF);
+				m_toneBuf[i + 1] = (byte)((tone & 0xFF00) >> 8);
+			}
+		}
+		
+		return m_toneBuf;
 	}
 	
 	public static class SoundDeviceException extends Exception {

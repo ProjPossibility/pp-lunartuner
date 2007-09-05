@@ -1,17 +1,14 @@
 package soundDevice;
 
-import misc.BigPipedInputStream;
+import java.io.*;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.TargetDataLine;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
-import java.io.IOException;
-import java.io.PipedOutputStream;
+import misc.*;
+import javax.sound.sampled.*;
 
 public class JavaSESound extends SoundDevice {
 	
-	private TargetDataLine m_line = null;
+	private TargetDataLine m_inLine = null;
+	private SourceDataLine m_outLine = null;
 	
 	public JavaSESound(SoundInfo soundInfo) throws SoundDeviceException {
 		super(soundInfo);
@@ -24,9 +21,38 @@ public class JavaSESound extends SoundDevice {
 				getSoundInfo().getSampleBigEndian()); 
 		
 		try {
-			m_line = AudioSystem.getTargetDataLine(format);
-			m_line.open(format, getSoundInfo().getFrameSize());
-			m_line.start();
+			m_inLine = AudioSystem.getTargetDataLine(format);
+			m_inLine.open(format, getSoundInfo().getFrameSize());
+			m_inLine.start();
+			m_outLine = AudioSystem.getSourceDataLine(format);
+			m_outLine.open(format, getSoundInfo().getFrameSize());
+			m_outLine.start();
+			
+			/*
+			System.out.println(m_inLine.getBufferSize());
+			System.out.println(m_inLine.getFramePosition());
+			System.out.println(m_inLine.getLevel());			
+			System.out.println(m_inLine.isActive());
+			System.out.println(m_inLine.getFormat());
+			System.out.println(m_inLine.getLineInfo());
+			Control[] c = m_inLine.getControls();
+			System.out.println(c.length);
+			for (int i = 0; i < c.length; ++i) {
+				System.out.println(c[i]);
+			}
+			
+			System.out.println(m_outLine.getBufferSize());
+			System.out.println(m_outLine.getFramePosition());
+			System.out.println(m_outLine.getLevel());			
+			System.out.println(m_outLine.isActive());
+			System.out.println(m_outLine.getFormat());
+			System.out.println(m_outLine.getLineInfo());
+			c = m_outLine.getControls();
+			System.out.println(c.length);
+			for (int i = 0; i < c.length; ++i) {
+				System.out.println(c[i]);
+			}
+			*/
 		}
 		catch (LineUnavailableException e) {
 			throw new SoundDeviceException(e);
@@ -34,20 +60,30 @@ public class JavaSESound extends SoundDevice {
 	}
 	
 	public void finalize() {
-		if (m_line != null) {
-            m_line.stop();
-            m_line.close();
+		if (m_inLine != null) {
+            m_inLine.stop();
+            m_inLine.close();
+		}
+		if (m_outLine != null) {
+            m_outLine.stop();
+            m_outLine.close();
 		}
 	}
 	
 	public void readSample() throws SoundDeviceException {
-		if (m_line.read(getSampleBuf(), 0, getSampleBuf().length) != getSampleBuf().length) {
+		if (m_inLine.read(getSampleBuf(), 0, getSampleBuf().length) != getSampleBuf().length) {
 			throw new SoundDeviceException("Could not read enough bytes");
 		}
 		
 		writeToListeners();
 	}
 	
+	public void writeSample(byte sampleBuf[]) throws SoundDeviceException {
+		if (m_outLine.write(sampleBuf, 0, sampleBuf.length) != sampleBuf.length) {
+			throw new SoundDeviceException("Could not write enough bytes");
+		}
+	}
+
 	public void addListener(SampleListener listener) throws SoundDeviceException {
 		BigPipedInputStream is;
 		PipedOutputStream os;
@@ -61,5 +97,5 @@ public class JavaSESound extends SoundDevice {
 		
 		addListener(listener, is, os);
 	}
-		
+	
 }
