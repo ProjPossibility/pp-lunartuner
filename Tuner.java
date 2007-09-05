@@ -10,19 +10,17 @@ import org.eclipse.swt.widgets.*;
 
 import pitchDetector.*;
 import soundDevice.*;
+import soundDevice.SoundDevice.*;
 import misc.*;
 
 public class Tuner {
-
 	private static final String METER_IMAGE = "resource/meter.gif";
-
 	private static final int METER_DIMX = 93;
-
 	private static final int METER_DIMY = 350;
-
+	
 	private static final String HELP_FILE = "resource/help.htm";
 	private static final String ABOUT_FILE = "resource/about.htm";
-
+	
 	private Display m_display = null;
 	private Shell m_shell = null;
 	private Canvas m_canvasMeter = null;
@@ -30,23 +28,21 @@ public class Tuner {
 	private Combo m_comboInstrument = null;
 
 	private Combo m_comboNote = null;
-
 	private Text m_textNoteHeard = null;
-
 	private Text m_textNoteInstructions = null;
 
 	private Button m_buttonEnableNotify = null;
-
 	private Button m_buttonDisableNotify = null;
+	
+	private Button m_buttonPlay = null;
 
 	private double m_currentError = 0;
 
 	private PitchCollection m_currentPitchCollection = null;
-
 	private PitchAnalyzer m_pitchAnalyzer = null;
-
 	private Vector<PitchCollection> m_instrumentList = new Vector<PitchCollection>();
-
+	private SoundDevice m_soundDevice = null;
+	
 	// For the interval notifier
 	boolean m_intervalEnabled = false;
 	long m_intervalLength = 10000;
@@ -55,20 +51,14 @@ public class Tuner {
 
 	public static void main(String[] args) {
 		try {
-			Log.getInstance().setOutputStream(
-					new FileOutputStream(new File("log.txt"), true));
+			Log.getInstance().setOutputStream(new FileOutputStream(new File("log.txt"), true));
 		} catch (FileNotFoundException e) {
 			ErrorDialog.show(e, "Could not open log file");
 			System.exit(1);
 		}
-
-		try {
-			TunerConf.getInstance().loadConfigFile("config.xml");
-		} catch (IOException e) {
-			ErrorDialog.show(e, "Could not load config file");
-			System.exit(1);
-		}
-
+		
+		System.out.println(TunerConf.getInstance());
+		
 		new Tuner().run();
 	}
 
@@ -112,22 +102,22 @@ public class Tuner {
 			// Define sampling properties
 			SoundInfo si = new SoundInfo(44100.0f, 16, 1, true, false, 4096);
 			// Initialize sound device
-			SoundDevice sd = new JavaSESound(si);
+			m_soundDevice = new JavaSESound(si);
 			// Initialize pitch detection engine
 
 			PitchDetector pd = null;
-			if (TunerConf.getInstance().getString("tuner_algorithm").equals(
-					"hsp")) {
-				pd = new HspDetector(sd);
-			} else if (TunerConf.getInstance().getString("tuner_algorithm")
-					.equals("nsdf")) {
-				pd = new NsdfDetector(sd);
-			} else {
-				ErrorDialog
-						.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
+			if (TunerConf.getInstance().getString("tuner_algorithm").equals("hsp")) {
+				pd = new HspDetector(m_soundDevice);
+			}
+			else
+			if (TunerConf.getInstance().getString("tuner_algorithm").equals("nsdf")) {
+				pd = new NsdfDetector(m_soundDevice);
+			}
+			else {
+				ErrorDialog.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
 				System.exit(1);
 			}
-
+			
 			// Initialize temporary variables for holding messages/values
 			String noteHeard;
 			String noteError;
@@ -137,7 +127,7 @@ public class Tuner {
 				if (!m_display.readAndDispatch()) {
 					// Read a sample - the pitch detector is subscribed and will
 					// get a copy
-					sd.readSample();
+					m_soundDevice.readSample();
 					pd.calcPitch(); // Do the calculation
 					rawSample = pd.getPitch(); // Retrieve the results
 					sample = m_pitchAnalyzer.analyze(rawSample); // Analyze
@@ -378,7 +368,13 @@ public class Tuner {
 				.addSelectionListener(new NotifyIntervalListener());
 		m_spinnerNotifyInterval.setValues(15, 2, 15, 0, 1, 5);
 		m_spinnerNotifyInterval.setEnabled(false);
-
+		
+		m_buttonPlay = new Button(m_notifyGroup, SWT.NONE);
+		m_buttonPlay.setLayoutData(gridDataColSpan2);
+		m_buttonPlay.setText("Play A");
+		m_buttonPlay
+				.addSelectionListener(new PlayListener());
+		
 		shell.pack();
 		shell.open();
 
@@ -547,6 +543,32 @@ public class Tuner {
 
 	}
 
+	private class PlayListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent e) {
+			
+		}
+		
+		public void widgetSelected(SelectionEvent e) {
+			try {
+				byte[] buf;
+				buf = m_soundDevice.createTone(82.40688922821748f, 5);
+				m_soundDevice.writeSample(buf);
+				buf = m_soundDevice.createTone(110.0f, 5);
+				m_soundDevice.writeSample(buf);
+				buf = m_soundDevice.createTone(146.8323839587038f, 5);
+				m_soundDevice.writeSample(buf);
+				buf = m_soundDevice.createTone(195.99771799087463f, 5);
+				m_soundDevice.writeSample(buf);
+				buf = m_soundDevice.createTone(246.94165062806206f, 5);
+				m_soundDevice.writeSample(buf);
+				buf = m_soundDevice.createTone(329.6275569128699f, 5);
+				m_soundDevice.writeSample(buf);
+			}
+			catch (SoundDeviceException ex) {
+				
+			}
+		}
+	}
 	/*
 	 * All the code below is related to the accessible INNTERVAL messages that
 	 * appear when interval notify is enabled.
