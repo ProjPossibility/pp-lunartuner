@@ -100,4 +100,8 @@ public class PitchAnalyzer {
 		}
 		return true;
 	}
+	
+	public double getPitchFreq(int pitchNum) {
+		return m_pitchFreqMap[pitchNum];
+	}
 }
