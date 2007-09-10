@@ -266,12 +266,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
 
    private void m_cbInstrumentNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteActionPerformed
       InstrumentNote note = (InstrumentNote)m_cbInstrumentNote.getSelectedItem();
-      UpdateThread.changeTuneNote(new PitchSample(note.getName(), note.getFreqIdx()));
+//	 UpdateLunarTuner.changeTuneNote(new PitchSample(note.getName(), note.getFreqIdx()));
    }//GEN-LAST:event_m_cbInstrumentNoteActionPerformed
 
    private void m_btnPlayNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_btnPlayNoteActionPerformed
       InstrumentNote note = (InstrumentNote)m_cbInstrumentNote.getSelectedItem();
-      UpdateThread.playNote(new PitchSample(note.getName(), note.getFreqIdx()));
+      UpdateLunarTuner.playNote(new PitchSample(note.getName(), note.getFreqIdx()));
    }//GEN-LAST:event_m_btnPlayNoteActionPerformed
    
    /**
@@ -283,7 +283,14 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	    LunarTunerGui.getInstance().setVisible(true);
 	 }
       });
-      UpdateThread.run();
+
+      java.awt.EventQueue.invokeLater(new Runnable() {
+	 public void run() {
+	    UpdateLunarTuner.getInstance().updateLoop();
+	 }
+      });
+      
+      
    }
    
    // Variables declaration - do not modify//GEN-BEGIN:variables

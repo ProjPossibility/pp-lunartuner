@@ -55,7 +55,7 @@ public class InstrumentInfo {
 			int noteCount = instXml.getInt("note_count");
 			m_name = instXml.getString("instrument_name");
 			for (int i = 0; i < noteCount; ++i) {
-				InstrumentNote note = new InstrumentNote(i, instXml.getDouble("freq_" + i), instXml.getString("name_" + i));
+				InstrumentNote note = new InstrumentNote(i, instXml.getInt("freq_" + i), instXml.getString("name_" + i));
 				m_notes.put(new Integer(i), note);
 			}
 		}
@@ -71,22 +71,25 @@ public class InstrumentInfo {
 			}
 			return sortedNotes;
 		}
+		
+		public String toString() { return m_name; }
 	}
 	
 	static public class InstrumentNote {
 		private int m_index;
-		private double m_freq;
+		private int m_freqIdx;
 		private String m_name;
 		
-		public InstrumentNote(int index, double freq, String name) {
+		public InstrumentNote(int index, int freqIdx, String name) {
 			m_index = index;
-			m_freq = freq;
+			m_freqIdx = freqIdx;
 			m_name = name;
 		}
 		
-		int getIndex() { return m_index; }
-		double getFreq() { return m_freq; }
-		String getName() { return m_name; }
+		public int getIndex() { return m_index; }
+		public int getFreqIdx() { return m_freqIdx; }
+		public String getName() { return m_name; }
+		public String toString() { return m_name; }
 	}
 	
 }

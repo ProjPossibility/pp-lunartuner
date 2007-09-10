@@ -1,15 +1,9 @@
 package misc;
 
-import org.eclipse.swt.widgets.*;
+import java.awt.*;
+import javax.swing.*;
 
-public class ErrorDialog {
-	static final long serialVersionUID = 0;
-	
-	static private Shell m_shell = null;
-	
-	static public void setShell(Shell shell) {
-		m_shell = shell;
-	}
+public class ErrorDialog extends JDialog {
 	
 	static public void show(String s) {
 		new ErrorDialog(null, s);
@@ -24,39 +18,44 @@ public class ErrorDialog {
 	}
 	
 	public ErrorDialog(Exception e) {
+		//super(NTFrame.getFrame());
 		init(e, null);
 	}
 	
 	public ErrorDialog(Exception e, String msg) {
+		//super(NTFrame.getFrame());
 		init(e, msg);
 	}
 	
 	private void init(Exception e, String msg) {
-		MessageBox mbox = new MessageBox(m_shell);
-		
-		String contents = "";
+		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		setModal(true);
+		setResizable(true);
 		
 		if (msg != null) {
-			contents += msg + "\n";
+			add(new JLabel(msg));
 			Log.getInstance().logMessage(getClass(), msg);
 		}
 		
 		if (e != null) {
-			contents += e.getMessage() + "\n";
-			Log.getInstance().logError(getClass(), e.getMessage(), e);
-			
+			add(new JLabel(e.getMessage()));
+		
+			Log.getInstance().logError(getClass(), msg, e);
+		
 			StackTraceElement[] trace = e.getStackTrace();
 			for (int i = 0; i < ((trace.length < 10) ? trace.length : 10); ++i) {
 				String line = trace[i].getFileName() + ":" 
 						+ trace[i].getClassName() + ":" 
 						+ trace[i].getMethodName() + ":" 
 						+ trace[i].getLineNumber();
-				contents += line + "\n";
+				add(new JLabel(line));
 			}
 		}
 		
-		mbox.setText(contents);
-		mbox.open();
+		pack();
+		setBounds(getX(), getY(), getWidth() + 15, getHeight() + 15);
+		setLocationByPlatform(true);
+		setVisible(true);
 	}
-	
+        
 }
