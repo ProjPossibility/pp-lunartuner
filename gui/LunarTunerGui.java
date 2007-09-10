@@ -50,10 +50,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
         label_noteHeard.setText("Note Heard:");
 
         textField_noteHeard.setMinimumSize(null);
+        textField_noteHeard.getAccessibleContext().setAccessibleName("Note Heard");
 
         label_instructions.setText("Instructions:");
 
         textField_instructions.setMinimumSize(null);
+        textField_instructions.getAccessibleContext().setAccessibleName("Instructions");
 
         org.jdesktop.layout.GroupLayout panel_statusLayout = new org.jdesktop.layout.GroupLayout(panel_status);
         panel_status.setLayout(panel_statusLayout);
@@ -84,13 +86,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
         panel_instrument.setBorder(javax.swing.BorderFactory.createTitledBorder("Instrument"));
         label_instrumentName.setText("Name:");
 
-        comboBox_instrumentName.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        comboBox_instrumentName.setMinimumSize(null);
         comboBox_instrumentName.getAccessibleContext().setAccessibleName("Instrument Name");
 
         label_instrumentNote.setText("Note:");
 
-        comboBox_instrumentNote.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBox_instrumentNote.getAccessibleContext().setAccessibleName("Instrument Note");
 
         button_playNote.setText("Play Note");
 
@@ -133,6 +133,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
         checkBox_intervalNotify.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         label_intervalInSeconds.setText("Interval in Seconds");
+
+        spinner_intervalNotifyTime.getAccessibleContext().setAccessibleName("Interval in Seconds");
 
         org.jdesktop.layout.GroupLayout panel_notifySettingsLayout = new org.jdesktop.layout.GroupLayout(panel_notifySettings);
         panel_notifySettings.setLayout(panel_notifySettingsLayout);

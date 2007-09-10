@@ -116,6 +116,9 @@
               <Dimension value="null"/>
             </Property>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Note Heard"/>
+          </AccessibilityProperties>
         </Component>
         <Component class="javax.swing.JLabel" name="label_instructions">
           <Properties>
@@ -128,6 +131,9 @@
               <Dimension value="null"/>
             </Property>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Instructions"/>
+          </AccessibilityProperties>
         </Component>
       </SubComponents>
     </Container>
@@ -191,15 +197,7 @@
         <Component class="javax.swing.JComboBox" name="comboBox_instrumentName">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
-            </Property>
-            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="null"/>
+              <StringArray count="0"/>
             </Property>
           </Properties>
           <AccessibilityProperties>
@@ -214,14 +212,12 @@
         <Component class="javax.swing.JComboBox" name="comboBox_instrumentNote">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
+              <StringArray count="0"/>
             </Property>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Instrument Note"/>
+          </AccessibilityProperties>
         </Component>
         <Component class="javax.swing.JButton" name="button_playNote">
           <Properties>
@@ -291,6 +287,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JSpinner" name="spinner_intervalNotifyTime">
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Interval in Seconds"/>
+          </AccessibilityProperties>
         </Component>
       </SubComponents>
     </Container>
