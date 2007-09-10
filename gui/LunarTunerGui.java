@@ -283,6 +283,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	    LunarTunerGui.getInstance().setVisible(true);
 	 }
       });
+      UpdateThread.run();
    }
    
    // Variables declaration - do not modify//GEN-BEGIN:variables
