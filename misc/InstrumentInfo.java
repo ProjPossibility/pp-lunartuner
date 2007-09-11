@@ -43,6 +43,10 @@ public class InstrumentInfo {
 		private String m_name = null;
 		private TreeMap m_notes = new TreeMap();
 		
+		public Instrument() {
+		   m_name = "";
+		}
+		
 		public Instrument(String fname) {
 			XmlLoader instXml = new XmlLoader();
 			try {
@@ -79,6 +83,12 @@ public class InstrumentInfo {
 		private int m_index;
 		private int m_freqIdx;
 		private String m_name;
+		
+		public InstrumentNote() {
+		   m_index = -1;
+		   m_freqIdx = -1;
+		   m_name = "";
+		}
 		
 		public InstrumentNote(int index, int freqIdx, String name) {
 			m_index = index;

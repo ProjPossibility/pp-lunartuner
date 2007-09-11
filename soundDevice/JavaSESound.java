@@ -14,16 +14,17 @@ public class JavaSESound extends SoundDevice {
 		super(soundInfo);
 		
 		AudioFormat format = new AudioFormat(
-				getSoundInfo().getSampleRate(), 
-				getSoundInfo().getSampleDepth(), 
-				getSoundInfo().getSampleChannels(), 
-				getSoundInfo().getSampleSigned(), 
-				getSoundInfo().getSampleBigEndian()); 
+				getSoundInfo().getSampleRate(),
+				getSoundInfo().getSampleDepth(),
+				getSoundInfo().getSampleChannels(),
+				getSoundInfo().getSampleSigned(),
+				getSoundInfo().getSampleBigEndian());
 		
 		try {
 			m_inLine = AudioSystem.getTargetDataLine(format);
 			m_inLine.open(format, getSoundInfo().getFrameSize());
 			m_inLine.start();
+			
 			m_outLine = AudioSystem.getSourceDataLine(format);
 			m_outLine.open(format, getSoundInfo().getFrameSize());
 			m_outLine.start();
@@ -31,7 +32,7 @@ public class JavaSESound extends SoundDevice {
 			/*
 			System.out.println(m_inLine.getBufferSize());
 			System.out.println(m_inLine.getFramePosition());
-			System.out.println(m_inLine.getLevel());			
+			System.out.println(m_inLine.getLevel());
 			System.out.println(m_inLine.isActive());
 			System.out.println(m_inLine.getFormat());
 			System.out.println(m_inLine.getLineInfo());
@@ -40,10 +41,10 @@ public class JavaSESound extends SoundDevice {
 			for (int i = 0; i < c.length; ++i) {
 				System.out.println(c[i]);
 			}
-			
+			 
 			System.out.println(m_outLine.getBufferSize());
 			System.out.println(m_outLine.getFramePosition());
-			System.out.println(m_outLine.getLevel());			
+			System.out.println(m_outLine.getLevel());
 			System.out.println(m_outLine.isActive());
 			System.out.println(m_outLine.getFormat());
 			System.out.println(m_outLine.getLineInfo());
@@ -52,21 +53,21 @@ public class JavaSESound extends SoundDevice {
 			for (int i = 0; i < c.length; ++i) {
 				System.out.println(c[i]);
 			}
-			*/
-		}
-		catch (LineUnavailableException e) {
+			 */
+		} catch (LineUnavailableException e) {
 			throw new SoundDeviceException(e);
 		}
 	}
 	
 	public void finalize() {
 		if (m_inLine != null) {
-            m_inLine.stop();
-            m_inLine.close();
+			m_inLine.stop();
+			m_inLine.close();
 		}
+		
 		if (m_outLine != null) {
-            m_outLine.stop();
-            m_outLine.close();
+			m_outLine.stop();
+			m_outLine.close();
 		}
 	}
 	
@@ -74,7 +75,6 @@ public class JavaSESound extends SoundDevice {
 		if (m_inLine.read(getSampleBuf(), 0, getSampleBuf().length) != getSampleBuf().length) {
 			throw new SoundDeviceException("Could not read enough bytes");
 		}
-		
 		writeToListeners();
 	}
 	
@@ -83,19 +83,17 @@ public class JavaSESound extends SoundDevice {
 			throw new SoundDeviceException("Could not write enough bytes");
 		}
 	}
-
+	
 	public void addListener(SampleListener listener) throws SoundDeviceException {
 		BigPipedInputStream is;
 		PipedOutputStream os;
 		try {
 			is = new BigPipedInputStream();
 			os = new PipedOutputStream(is);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new SoundDeviceException(e);
 		}
 		
 		addListener(listener, is, os);
 	}
-	
 }

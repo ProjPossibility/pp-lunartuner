@@ -91,9 +91,11 @@ public class PitchAnalyzer {
 	public void setCurrentTuneNote (PitchSample current) {
 		m_currentTuneNote = current;
 	}
+	
 	public void resetCurrentTuneNote () {
 		m_currentTuneNote = null;
 	}
+	
 	public boolean currentTuneNoteIsSet() {
 		if (m_currentTuneNote == null) {
 			return false;
