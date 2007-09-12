@@ -3,6 +3,8 @@ package gui;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.JOptionPane;
+
 import pitchDetector.*;
 import soundDevice.*;
 import soundDevice.SoundDevice.*;
@@ -10,18 +12,14 @@ import misc.*;
 
 public class UpdateLunarTuner {
 	private static UpdateLunarTuner m_instance = new UpdateLunarTuner();
-	
+        
 	private double m_currentError = 0;
 	
 	private PitchAnalyzer m_pitchAnalyzer = null;
 	private SoundDevice m_soundDevice = null;
 	private PitchDetector m_pitchDetector = null;
 	
-	// For the interval notifier
-	boolean m_intervalEnabled = false;
-	long m_intervalLength = 10000;
-	long m_intervalLastNotification = 0;
-	
+
 	private UpdateLunarTuner() {
 		try {
 			Log.getInstance().setOutputStream(new FileOutputStream(new File("log.txt"), true));
@@ -29,13 +27,12 @@ public class UpdateLunarTuner {
 			ErrorDialog.show(e, "Could not open log file");
 			System.exit(1);
 		}
-		
+
 		System.out.println(TunerConf.getInstance());
 		
-		m_pitchAnalyzer = new PitchAnalyzer();
-		
 		try {
-			
+			// Create pitch analyzer
+			m_pitchAnalyzer = new PitchAnalyzer();			
 			// Define sampling properties
 			SoundInfo si = new SoundInfo(44100.0f, 16, 1, true, false, 4096);
 			// Initialize sound device
@@ -98,10 +95,10 @@ public class UpdateLunarTuner {
 							noteInstructions = "Tuned!";
 						}
 						LunarTunerGui.setInstructions(noteInstructions);
-						updateInterval(noteHeard, noteError,
+						LunarTunerGui.updateInterval(noteHeard, noteError,
 								noteInstructions);
 					} else {
-						updateIntervalTimer(noteHeard, noteError);
+						LunarTunerGui.updateIntervalTimer(noteHeard, noteError);
 					}
 				}
 			}
@@ -113,7 +110,6 @@ public class UpdateLunarTuner {
 	
 	static public void changeTuneNote(PitchSample tuneNote) {
 		m_instance.m_pitchAnalyzer.setCurrentTuneNote(tuneNote);
-		m_instance.resetIntervalTimer();
 	}
 	
 	static public void playNote(PitchSample note) {
@@ -126,51 +122,11 @@ public class UpdateLunarTuner {
 			ErrorDialog.show(e);
 		}
 		
-	}
-	
-	/*
-	 * All the code below is related to the accessible INNTERVAL messages that
-	 * appear when interval notify is enabled.
-	 */
-	
-	private void resetIntervalTimer() {
-		m_intervalLastNotification = new Date().getTime();
-	}
-	
-	public void updateIntervalTimer(String noteHeard, String noteError) {
-		if (new Date().getTime() - m_intervalLastNotification > m_intervalLength
-				&& m_intervalEnabled) {
-			throwMessageBox("I heard " + noteHeard + " with " + noteError);
-			m_intervalLastNotification = new Date().getTime();
-		}
-	}
-	
-	public void setIntervalNotifyLength(long interval) {
-		m_intervalLength = interval;
-	}
-	
-	public void setIntervalNotifyEnabled(boolean enabled) {
-		m_intervalEnabled = enabled;
-		m_intervalLastNotification = new Date().getTime();
-	}
-	
-	public void updateInterval(String noteHeard, String noteError,
-			String noteInstructions) {
-		if (new Date().getTime() - m_intervalLastNotification > m_intervalLength
-				&& m_intervalEnabled) {
-			m_intervalLastNotification = new Date().getTime();
-			throwMessageBox(noteError + ". " + noteInstructions);
-		}
-	}
-	
-	public void throwMessageBox(String message) {
-		// Show message box
-		// Need the "stop" button on the message box to disable notify checkbox
-		// And call setIntervalNotifyEnabled(false);
-	}
-	
-	static public UpdateLunarTuner getInstance() {
-		return m_instance;
-	}
-	
+	}	
+        
+
+    static public UpdateLunarTuner getInstance() {
+            return m_instance;
+    }
+
 }
