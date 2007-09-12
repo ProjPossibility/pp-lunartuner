@@ -20,7 +20,17 @@ public class InstrumentInfo {
 			return;
 		}
 		
-		File[] instFiles = instDir.listFiles();
+		File[] instFiles = instDir.listFiles(new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				if(name.endsWith(".xml")) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			
+		});
 		
 		for (int i = 0; i < instFiles.length; ++i) {
 			Instrument inst = new Instrument(instFiles[i].getPath());
