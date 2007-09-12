@@ -25,7 +25,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		Graphics2D g = (Graphics2D)m_instance.m_lblMeter.getGraphics();
 		ImageIcon icon = (ImageIcon)m_instance.m_lblMeter.getIcon();
 		
-		err = 1.0f - err;
+		err = -1 * err;
 		
 		int errPix = icon.getIconHeight() / 2 + (int)err;
 		if (errPix > icon.getIconHeight()) {
