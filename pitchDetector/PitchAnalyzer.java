@@ -1,5 +1,7 @@
 package pitchDetector;
 
+import misc.InstrumentInfo;
+import misc.InstrumentInfo.*;
 
 /*
  *	Must run init() before using this class! 
@@ -10,12 +12,11 @@ public class PitchAnalyzer {
 
 	private static final int PITCH_RANGE = 200;
 	
-	private double[] m_pitchFreqMap;
-	private String[] m_pitchNameMap;
+	static private double[] m_pitchFreqMap;
+	static private String[] m_pitchNameMap;
 	private PitchSample m_currentTuneNote = null;
 	
-	public PitchAnalyzer() {
-
+	static {
 		m_pitchFreqMap = new double[PITCH_RANGE];
 		m_pitchNameMap = new String[PITCH_RANGE];
 		
@@ -41,10 +42,12 @@ public class PitchAnalyzer {
 			m_pitchFreqMap[i] = 440.0 * Math.pow(2.0,((double)i-69.0)/12.0);
 			// Assign name as reference to basePitchNameMap
 			m_pitchNameMap[i] = basePitchNameMap[ (i + 3) % 12 ];
-			
 			// Debug
 			System.out.println("Name: " + m_pitchNameMap[i] + " Num: " + i + " Freq: " + m_pitchFreqMap[i]);
 		}
+	}
+	
+	public PitchAnalyzer() {
 	}
 
 	public PitchSample analyze (double sampleValue) {
@@ -106,4 +109,13 @@ public class PitchAnalyzer {
 	public double getPitchFreq(int pitchNum) {
 		return m_pitchFreqMap[pitchNum];
 	}
+	
+	static public double[] getPitchFreqMap() {
+		return m_pitchFreqMap;
+	}
+	
+	static public String[] getPitchNameMap() {
+		return m_pitchNameMap;
+	}
+	
 }

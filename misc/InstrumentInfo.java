@@ -3,6 +3,7 @@ package misc;
 import java.util.*;
 import java.io.*;
 
+import pitchDetector.PitchAnalyzer;
 import misc.XmlLoader.XmlLoaderException;
 
 public class InstrumentInfo {
@@ -54,7 +55,18 @@ public class InstrumentInfo {
 		private TreeMap m_notes = new TreeMap();
 		
 		public Instrument() {
-		   m_name = "";
+		   m_name = "Automatic";
+			String[] pitchNames = PitchAnalyzer.getPitchNameMap();
+			double[] pitchFreqs = PitchAnalyzer.getPitchFreqMap();
+			for (int i = 0; i < pitchNames.length; ++i) {
+				String freq = Double.toString(pitchFreqs[i]);
+				int decIdx = freq.indexOf(".");
+				int rndIdx = (decIdx + 3 < freq.length()) ? decIdx + 3 : freq.length();
+				
+				InstrumentNote note = new InstrumentNote(i, i, 
+						i + ". " + pitchNames[i] + " (" + freq.substring(0, rndIdx) + " Hz)");
+				m_notes.put(new Integer(i), note);
+			}
 		}
 		
 		public Instrument(String fname) {

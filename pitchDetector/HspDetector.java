@@ -1,13 +1,15 @@
 package pitchDetector;
 
+import java.io.*;
 import soundDevice.SoundDevice;
 import misc.Fftw;
 
 public class HspDetector extends PitchDetector {
 	final private int PAD_FACTOR = 32;
-	final private int HARMONICS = 5;
-	final private int SAMPLE_AVG = 10;
-	final private double FREQ_MAX = 5000.0;
+	final private int HARMONICS = 7;
+	final private int SAMPLE_AVG = 5;
+	final private double FREQ_MIN = 70.0;
+	final private double FREQ_MAX = 2500.0;
 	
 	private double[] m_sample = null;
 	private double[] m_fft = null;
@@ -18,6 +20,7 @@ public class HspDetector extends PitchDetector {
 	private int m_samplesPadded;
 	private int m_fftLen;
 	private double m_fftRes;
+	private int m_fftIdxMin;
 	private int m_fftIdxMax;
 	
 	private double m_runAvg;
@@ -26,9 +29,17 @@ public class HspDetector extends PitchDetector {
 	private int m_runAvgNew;
 	private double[] m_runAvgArr;
 	
+	private FileWriter m_dataFile = null;
 	public HspDetector(SoundDevice soundDevice) throws PitchDetectorException {
 		super(soundDevice);
     	
+		try {
+			m_dataFile = new FileWriter("data.txt");
+		}
+		catch (IOException e) {
+			System.out.println("Could not open data file");
+		}
+		
 		m_samples = soundDevice.getSoundInfo().getFrameSize();
 		m_samplesPadded = m_samples * PAD_FACTOR;
 		m_fftLen = m_samplesPadded/2 + 1;
@@ -47,6 +58,7 @@ public class HspDetector extends PitchDetector {
 		
 		calcFreqScale();
 		
+		m_fftIdxMin = (int)(FREQ_MIN / m_fftRes);
 		m_fftIdxMax = (int)(FREQ_MAX / m_fftRes);
 	}
 	
@@ -79,7 +91,6 @@ public class HspDetector extends PitchDetector {
 		for (int i = 0; i < m_fftLen; ++i) {
 			m_hspData[0][i] = 2.0f * Math.sqrt(m_fft[2*i] * m_fft[2*i] + m_fft[2*i+1] * m_fft[2*i+1]);
 		}
-		//System.arraycopy(m_fft, 0, m_hspData[0], 0, m_fftLen);
 		
 		// Resample signal based on harmonic divisions
 		for (int i = 1; i < HARMONICS; ++i) {
@@ -103,11 +114,19 @@ public class HspDetector extends PitchDetector {
 		
 		// Find frequency with highest magnitude to get pitch
 		int maxIdx = 0;
-		for (int i = 1; i < m_fftIdxMax; ++i) {
-			if (m_hsp[i] > m_hsp[maxIdx]) {
-				maxIdx = i;
+		//try {
+			for (int i = m_fftIdxMin; i < m_fftIdxMax; ++i) {
+				if (m_hsp[i] > m_hsp[maxIdx]) {
+					maxIdx = i;
+				}
+				//m_dataFile.write(m_hspData[0][i] + " ");
 			}
-		}
+			//m_dataFile.write("\n");
+		//}
+		//catch (IOException e) {
+		//	System.out.println("Could not write vector");
+		//	System.exit(1);
+		//}
 		
 		//setPitch(m_freqScale[maxIdx]);
 		setPitch(calcRunAvg(m_freqScale[maxIdx]));

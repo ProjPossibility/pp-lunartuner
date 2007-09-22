@@ -84,7 +84,7 @@ public abstract class SoundDevice {
 		
 		for (int i = 0; i < m_len; i += 2, t += dt) {
 			// Generate the tone. Have the amplitude be 2/3 of the maximum
-			short tone = (short)Math.round( Short.MAX_VALUE * Math.sin(f * 2.0f * Math.PI * t) );
+			short tone = (short)Math.round((2.0f/3.0f) * Short.MAX_VALUE * Math.sin(f * 2.0f * Math.PI * t) );
 			if (getSoundInfo().getSampleBigEndian()) {
 				m_toneBuf[i] = (byte)((tone & 0xFF00) >> 8);
 				m_toneBuf[i + 1] = (byte)(tone & 0x00FF);
