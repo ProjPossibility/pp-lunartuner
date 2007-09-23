@@ -33,12 +33,14 @@ public class HspDetector extends PitchDetector {
 	public HspDetector(SoundDevice soundDevice) throws PitchDetectorException {
 		super(soundDevice);
     	
+		/*
 		try {
 			m_dataFile = new FileWriter("data.txt");
 		}
 		catch (IOException e) {
 			System.out.println("Could not open data file");
 		}
+		*/
 		
 		m_samples = soundDevice.getSoundInfo().getFrameSize();
 		m_samplesPadded = m_samples * PAD_FACTOR;
