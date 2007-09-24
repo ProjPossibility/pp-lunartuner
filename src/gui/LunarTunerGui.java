@@ -266,9 +266,10 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel15.setText("LunarTuner Help");
 
       jTextArea1.setColumns(20);
+      jTextArea1.setEditable(false);
       jTextArea1.setLineWrap(true);
       jTextArea1.setRows(5);
-      jTextArea1.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the tuner will find the closest note to  the pitch it detects and give determine the percent error based on that  note.  In Targeted Note mode, the use will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error percentage.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nIf the user has a screen reader like Jaws and wants to be updated periodically with the current note, they can click the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  A dialog box containing the current note information will  be opened and closed at that interval to trigger to screen reader.  To stop the notifier, press the stop button in the dialog box or click  the \"Enable Notify\" checkbox again.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
+      jTextArea1.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the tuner will find the closest note to  the pitch it detects and give determine the percent error based on that  note.  In Targeted Note mode, the user will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error percentage.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nIf the user has a screen reader like Jaws and wants to be updated periodically with the current note, they can click the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  A dialog box containing the current note information will  be opened and closed at that interval to trigger to screen reader.  To stop the notifier, press the stop button in the dialog box or click  the \"Enable Notify\" checkbox again.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
       jTextArea1.setWrapStyleWord(true);
       jScrollPane1.setViewportView(jTextArea1);
 
@@ -308,13 +309,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jPanel1Layout.setHorizontalGroup(
          jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
          .add(jPanel1Layout.createSequentialGroup()
-            .add(jLabel2)
-            .addContainerGap())
-         .add(m_txtInstructions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
-         .add(jPanel1Layout.createSequentialGroup()
-            .add(jLabel1)
-            .addContainerGap())
-         .add(m_txtNoteHeard, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+            .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+               .add(jLabel2)
+               .add(jLabel1))
+            .addContainerGap(168, Short.MAX_VALUE))
+         .add(m_txtNoteHeard, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+         .add(m_txtInstructions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -373,17 +373,14 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jPanel3Layout.setHorizontalGroup(
          jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
          .add(jPanel3Layout.createSequentialGroup()
-            .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-               .add(jPanel3Layout.createSequentialGroup()
-                  .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                  .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                     .add(m_cbInstrumentNote, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                     .add(m_cbInstrumentType, 0, 278, Short.MAX_VALUE)))
-               .add(m_btnPlayNote))
-            .addContainerGap(2, Short.MAX_VALUE))
+            .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+               .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+               .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+               .add(m_cbInstrumentType, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+               .add(m_cbInstrumentNote, 0, 217, Short.MAX_VALUE)))
+         .add(m_btnPlayNote)
       );
       jPanel3Layout.setVerticalGroup(
          jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -429,7 +426,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
                   .add(jLabel5)
                   .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                   .add(m_spinNotify, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap(92, Short.MAX_VALUE))
+            .addContainerGap(29, Short.MAX_VALUE))
       );
       jPanel4Layout.setVerticalGroup(
          jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -482,9 +479,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+               .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-               .add(jPanel3, 0, 327, Short.MAX_VALUE)
-               .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+               .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
