@@ -202,7 +202,7 @@ public class XmlLoader extends HashMap<String, Object> {
 						default:
 							value = null;
 					}
-					Log.getInstance().logMessage(getClass(), "Read parameter: (" + name + ", \"" + value + "\")");
+					//Log.getInstance().logMessage(getClass(), "Read parameter: (" + name + ", \"" + value + "\")");
 					put(name, value);
 				}
 				catch (NumberFormatException e) {

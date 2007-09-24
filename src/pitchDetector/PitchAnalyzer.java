@@ -43,7 +43,7 @@ public class PitchAnalyzer {
 			// Assign name as reference to basePitchNameMap
 			m_pitchNameMap[i] = basePitchNameMap[ (i + 3) % 12 ];
 			// Debug
-			System.out.println("Name: " + m_pitchNameMap[i] + " Num: " + i + " Freq: " + m_pitchFreqMap[i]);
+			//System.out.println("Name: " + m_pitchNameMap[i] + " Num: " + i + " Freq: " + m_pitchFreqMap[i]);
 		}
 	}
 	

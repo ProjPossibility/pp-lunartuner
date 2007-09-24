@@ -19,7 +19,6 @@ public class UpdateLunarTuner {
 	private SoundDevice m_soundDevice = null;
 	private PitchDetector m_pitchDetector = null;
 	
-
 	private UpdateLunarTuner() {
 		try {
 			Log.getInstance().setOutputStream(new FileOutputStream(new File("log.txt"), true));
@@ -28,8 +27,6 @@ public class UpdateLunarTuner {
 			System.exit(1);
 		}
 
-		System.out.println(TunerConf.getInstance());
-		
 		try {
 			// Create pitch analyzer
 			m_pitchAnalyzer = new PitchAnalyzer();			
@@ -41,15 +38,19 @@ public class UpdateLunarTuner {
 			
 			if (TunerConf.getInstance().getString("tuner_algorithm").equals("hsp")) {
 				m_pitchDetector = new HspDetector(m_soundDevice);
-			} else
+			}
+			else {
 				if (TunerConf.getInstance().getString("tuner_algorithm").equals("nsdf")) {
-				m_pitchDetector = new NsdfDetector(m_soundDevice);
-				} else {
-				ErrorDialog.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
-				System.exit(1);
+					m_pitchDetector = new NsdfDetector(m_soundDevice);
 				}
-		} catch (Exception e) {
-			Log.getInstance().logError(getClass(), "Unknown error", e);
+				else {
+					ErrorDialog.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
+					System.exit(1);
+				}
+			}
+		}
+		catch (Exception e) {
+			ErrorDialog.show("Invalid tuner algorithm specified in config file.  Try either hsp or nsdf.");
 			System.exit(1);
 		}
 	}
@@ -65,7 +66,6 @@ public class UpdateLunarTuner {
 		PitchSample sample;
 		
 		try {
-			
 			while(true) {
 				// Read a sample - the pitch detector is subscribed and will
 				// get a copy
@@ -97,13 +97,14 @@ public class UpdateLunarTuner {
 						LunarTunerGui.setInstructions(noteInstructions);
 						LunarTunerGui.updateInterval(noteHeard, noteError,
 								noteInstructions);
-					} else {
+					}
+					else {
 						LunarTunerGui.updateIntervalTimer(noteHeard, noteError);
 					}
 				}
 			}
 		} catch (Exception e) {
-			Log.getInstance().logError(getClass(), "Unknown error", e);
+			ErrorDialog.show(e);
 			System.exit(1);
 		}
 	}
@@ -118,15 +119,14 @@ public class UpdateLunarTuner {
 		try {
 			buf = m_instance.m_soundDevice.createTone(noteToPlay, 3);
 			m_instance.m_soundDevice.writeSample(buf);
-		} catch (SoundDeviceException e) {
+		}
+		catch (SoundDeviceException e) {
 			ErrorDialog.show(e);
 		}
-		
 	}	
-        
-
-    static public UpdateLunarTuner getInstance() {
-            return m_instance;
-    }
-
+	
+	static public UpdateLunarTuner getInstance() {
+		return m_instance;
+	}
+	
 }
