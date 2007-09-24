@@ -18,8 +18,8 @@
     <cp>lib/swing-layout-1.0.jar</cp>
   </classPath>
   <jre>
-    <path>c:\Program Files\Java\jdk1.5.0_12\jre</path>
-    <minVersion></minVersion>
+    <path></path>
+    <minVersion>1.5.0</minVersion>
     <maxVersion></maxVersion>
     <dontUsePrivateJres>false</dontUsePrivateJres>
     <initialHeapSize>0</initialHeapSize>
