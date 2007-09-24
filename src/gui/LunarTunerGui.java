@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.beans.*;
+import java.net.*;
 import pitchDetector.*;
 import misc.*;
 import misc.InstrumentInfo.*;
@@ -21,6 +22,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		initComponents();
 		loadInstruments();
 		loadInstrumentNotes();
+                ImageIcon img = new ImageIcon(getClass().getResource("/resource/icon.png"));
+                setIconImage(img.getImage());
 		m_intervalLength = 10000;
 		m_intervalLastNotification = 0;
 		m_spinNotify.setModel(new SpinnerNumberModel(new Long(m_intervalLength/1000), new Long(1), new Long(9999), new Long(1)));
