@@ -1,0 +1,28 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Documents and Settings\Christopher Leung\Desktop\lunartuner\dist\lunartuner.jar</jar>
+  <outfile>C:\Documents and Settings\Christopher Leung\Desktop\lunartuner\data\downloads\w32\LunarTuner.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <icon></icon>
+  <classPath>
+    <mainClass>gui.LunarTunerGui</mainClass>
+    <cp>lib/swing-layout-1.0.jar</cp>
+    <cp>lib/swing-layout-1.0.jar</cp>
+  </classPath>
+  <jre>
+    <path>c:\Program Files\Java\jdk1.5.0_12\jre</path>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+    <dontUsePrivateJres>false</dontUsePrivateJres>
+    <initialHeapSize>0</initialHeapSize>
+    <maxHeapSize>0</maxHeapSize>
+  </jre>
+</launch4jConfig>
