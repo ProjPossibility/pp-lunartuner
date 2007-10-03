@@ -290,7 +290,7 @@
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="m_panelMeter" min="0" max="32767" attributes="1"/>
                   <Component id="m_panelNotifySettings" alignment="0" max="32767" attributes="1"/>
-                  <Component id="m_panelInstrument" alignment="0" pref="264" max="32767" attributes="1"/>
+                  <Component id="m_panelInstrument" alignment="0" pref="304" max="32767" attributes="1"/>
               </Group>
           </Group>
       </Group>
@@ -331,10 +331,10 @@
                       <Component id="m_labelInstructions" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="m_labelNoteHeard" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="187" max="32767" attributes="0"/>
+                  <EmptySpace pref="208" max="32767" attributes="0"/>
               </Group>
-              <Component id="m_txtNoteHeard" alignment="0" pref="244" max="32767" attributes="1"/>
-              <Component id="m_txtInstructions" alignment="0" pref="244" max="32767" attributes="1"/>
+              <Component id="m_txtNoteHeard" alignment="0" pref="284" max="32767" attributes="1"/>
+              <Component id="m_txtInstructions" alignment="0" pref="284" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">

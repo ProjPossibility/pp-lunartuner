@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import java.beans.*;
 import java.net.*;
@@ -17,13 +18,22 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	private boolean m_intervalEnabled = false;
 	private long m_intervalLength;
 	private long m_intervalLastNotification;
+	private Robot m_robot = null;
 	
 	private LunarTunerGui() {
 		initComponents();
 		loadInstruments();
 		loadInstrumentNotes();
-                ImageIcon img = new ImageIcon(getClass().getResource("/resource/icon.png"));
-                setIconImage(img.getImage());
+		
+		try {
+			m_robot = new Robot();
+		}
+		catch (AWTException e) {
+			ErrorDialog.show(e);
+		}
+		
+		ImageIcon img = new ImageIcon(getClass().getResource("/resource/icon.png"));
+		setIconImage(img.getImage());
 		m_intervalLength = 10000;
 		m_intervalLastNotification = 0;
 	}
@@ -90,10 +100,24 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}
 	
    public static void updateIntervalTimer(String noteHeard, String noteError) {
-		if (new Date().getTime() - m_instance.m_intervalLastNotification > m_instance.m_intervalLength
+		long now = new Date().getTime();
+		System.out.println((now - m_instance.m_intervalLastNotification) + ">" + m_instance.m_intervalLength);
+		if (m_instance.isFocused() 
+				&& now - m_instance.m_intervalLastNotification > m_instance.m_intervalLength 
 				&& m_instance.m_intervalEnabled) {
-			m_instance.throwMessageBox(noteHeard + " " + noteError);
-			m_instance.m_intervalLastNotification = new Date().getTime();
+			m_instance.m_txtNoteHeard.requestFocus();
+			m_instance.m_txtNoteHeard.setSelectionStart(0);
+			m_instance.m_txtNoteHeard.setSelectionEnd(m_instance.m_txtNoteHeard.getText().length());
+			
+			m_instance.m_robot.keyPress(KeyEvent.VK_CAPS_LOCK);
+			m_instance.m_robot.keyPress(KeyEvent.VK_W);
+			
+			m_instance.m_robot.keyRelease(KeyEvent.VK_W);
+			m_instance.m_robot.keyRelease(KeyEvent.VK_CAPS_LOCK);	
+			
+			m_instance.m_chkNotify.requestFocus();
+			
+			m_instance.m_intervalLastNotification = now;
 		}
 	}
 	
@@ -107,10 +131,23 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}
 	
 	public static void updateInterval(String noteHeard, String noteError, String noteInstructions) {
-		if (new Date().getTime() - m_instance.m_intervalLastNotification > m_instance.m_intervalLength
-				&& m_instance.m_intervalEnabled) {
-			m_instance. m_intervalLastNotification = new Date().getTime();
-			m_instance.throwMessageBox(noteInstructions);
+		long now = new Date().getTime();
+		if (m_instance.isFocused() 
+				&& now - m_instance.m_intervalLastNotification > m_instance.m_intervalLength 
+				&& m_instance.m_intervalEnabled) {			
+			m_instance.m_txtInstructions.requestFocus();
+			m_instance.m_txtInstructions.setSelectionStart(0);
+			m_instance.m_txtInstructions.setSelectionEnd(m_instance.m_txtInstructions.getText().length());
+			
+			m_instance.m_robot.keyPress(KeyEvent.VK_CAPS_LOCK);
+			m_instance.m_robot.keyPress(KeyEvent.VK_W);
+			
+			m_instance.m_robot.keyRelease(KeyEvent.VK_W);
+			m_instance.m_robot.keyRelease(KeyEvent.VK_CAPS_LOCK);	
+			
+			m_instance.m_chkNotify.requestFocus();
+			
+			m_instance.m_intervalLastNotification = now;
 		}
 	}
 	
