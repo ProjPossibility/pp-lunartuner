@@ -3,8 +3,6 @@ package gui;
 import java.io.*;
 import java.util.*;
 
-import javax.swing.JOptionPane;
-
 import pitchDetector.*;
 import soundDevice.*;
 import soundDevice.SoundDevice.*;
@@ -22,20 +20,23 @@ public class UpdateLunarTuner {
 	private UpdateLunarTuner() {
 		try {
 			Log.getInstance().setOutputStream(new FileOutputStream(new File("log.txt"), true));
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			ErrorDialog.show(e, "Could not open log file");
 			System.exit(1);
 		}
 
 		try {
 			// Create pitch analyzer
-			m_pitchAnalyzer = new PitchAnalyzer();			
+			m_pitchAnalyzer = new PitchAnalyzer();
+			
 			// Define sampling properties
 			SoundInfo si = new SoundInfo(44100.0f, 16, 1, true, false, 4096);
+			
 			// Initialize sound device
 			m_soundDevice = new JavaSESound(si);
-			// Initialize pitch detection engine
 			
+			// Initialize pitch detection engine
 			if (TunerConf.getInstance().getString("tuner_algorithm").equals("hsp")) {
 				m_pitchDetector = new HspDetector(m_soundDevice);
 			}
@@ -57,7 +58,6 @@ public class UpdateLunarTuner {
 	
 	public void updateLoop() {
 		// Setup stuff for analysis
-		
 		String noteHeard;
 		String noteError;
 		String noteInstructions;
@@ -82,28 +82,39 @@ public class UpdateLunarTuner {
 					
 					// Update note heard and error text
 					noteHeard = sample.getExplicitPitchName();
-					noteError = Math.round(m_currentError) + "% error";
-					LunarTunerGui.setNoteHeard(noteHeard + " with " + noteError);
+					noteError = Math.round(m_currentError) + "%";
+					if (m_currentError > 0) {
+						noteError = "+" + noteError;
+					}
+					
+					LunarTunerGui.setNoteHeard(noteHeard + " " + noteError);
 					
 					// Update visible instructions
 					if (m_pitchAnalyzer.currentTuneNoteIsSet()) {
 						if (m_currentError > 2.0) {
 							noteInstructions = "Tune Down";
-						} else if (m_currentError < -2.0) {
+						}
+						else
+						if (m_currentError < -2.0) {
 							noteInstructions = "Tune Up";
-						} else {
+						}
+						else {
 							noteInstructions = "Tuned!";
 						}
 						LunarTunerGui.setInstructions(noteInstructions);
-						LunarTunerGui.updateInterval(noteHeard, noteError,
-								noteInstructions);
+						LunarTunerGui.updateInterval(noteHeard, noteError, noteInstructions);
 					}
 					else {
 						LunarTunerGui.updateIntervalTimer(noteHeard, noteError);
 					}
 				}
+				else {
+					LunarTunerGui.setNoteHeard("No Input");
+					LunarTunerGui.setInstructions("No Input");
+				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			ErrorDialog.show(e);
 			System.exit(1);
 		}
