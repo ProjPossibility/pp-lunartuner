@@ -275,6 +275,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       );
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      setLocationByPlatform(true);
       setResizable(false);
       jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Status")));
       jPanel1.setName("Status");
@@ -294,9 +295,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                .add(jLabel2)
                .add(jLabel1))
-            .addContainerGap(168, Short.MAX_VALUE))
-         .add(m_txtNoteHeard, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-         .add(m_txtInstructions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
+            .addContainerGap(178, Short.MAX_VALUE))
+         .add(m_txtNoteHeard, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+         .add(m_txtInstructions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -464,7 +465,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-               .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+               .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -511,7 +512,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		InstrumentNote note = (InstrumentNote)m_cbInstrumentNote.getSelectedItem();
 		if (!name.equals("Automatic") && note != null) {
 			UpdateLunarTuner.changeTuneNote(new PitchSample(note.getName(), note.getFreqIdx()));
-		} else {
+		}
+		else {
 			UpdateLunarTuner.changeTuneNote(null);
 		}
    }//GEN-LAST:event_m_cbInstrumentNoteActionPerformed

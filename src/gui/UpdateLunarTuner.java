@@ -91,11 +91,11 @@ public class UpdateLunarTuner {
 					
 					// Update visible instructions
 					if (m_pitchAnalyzer.currentTuneNoteIsSet()) {
-						if (m_currentError > 2.0) {
+						if (m_currentError > 3.0) {
 							noteInstructions = "Tune Down";
 						}
 						else
-						if (m_currentError < -2.0) {
+						if (m_currentError < -3.0) {
 							noteInstructions = "Tune Up";
 						}
 						else {
