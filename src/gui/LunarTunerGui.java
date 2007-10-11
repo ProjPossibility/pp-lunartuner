@@ -369,9 +369,19 @@ public class LunarTunerGui extends javax.swing.JFrame {
 
       jLabel4.setText("Note");
 
+      m_cbInstrumentNote.addItemListener(new java.awt.event.ItemListener() {
+         public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            m_cbInstrumentNoteItemStateChanged(evt);
+         }
+      });
       m_cbInstrumentNote.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             m_cbInstrumentNoteActionPerformed(evt);
+         }
+      });
+      m_cbInstrumentNote.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_cbInstrumentNoteFocusGained(evt);
          }
       });
 
@@ -379,6 +389,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_btnPlayNote.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             m_btnPlayNoteActionPerformed(evt);
+         }
+      });
+      m_btnPlayNote.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_btnPlayNoteFocusGained(evt);
          }
       });
 
@@ -419,13 +434,28 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_chkNotifyActionPerformed(evt);
          }
       });
+      m_chkNotify.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_chkNotifyFocusGained(evt);
+         }
+      });
 
       jLabel5.setText("Notify Interval in seconds");
 
       m_cbNotifyInterval.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
+      m_cbNotifyInterval.addItemListener(new java.awt.event.ItemListener() {
+         public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            m_cbNotifyIntervalItemStateChanged(evt);
+         }
+      });
       m_cbNotifyInterval.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             m_cbNotifyIntervalActionPerformed(evt);
+         }
+      });
+      m_cbNotifyInterval.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_cbNotifyIntervalFocusGained(evt);
          }
       });
 
@@ -510,12 +540,66 @@ public class LunarTunerGui extends javax.swing.JFrame {
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
-	private void m_cbInstrumentTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeItemStateChanged
-		Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
-	}//GEN-LAST:event_m_cbInstrumentTypeItemStateChanged
+	private void m_cbNotifyIntervalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalItemStateChanged
+		if (m_cbNotifyInterval.getSelectedItem() != null) {
+			Speech.speak("Notify Interval: " + m_cbNotifyInterval.getSelectedItem().toString() + " seconds");
+		}
+		else {
+			Speech.speak("Notify Interval: none selected");
+		}
+	}//GEN-LAST:event_m_cbNotifyIntervalItemStateChanged
 
+	private void m_cbNotifyIntervalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalFocusGained
+		if (m_cbNotifyInterval.getSelectedItem() != null) {
+			Speech.speak("Notify Interval: " + m_cbNotifyInterval.getSelectedItem().toString() + " seconds");
+		}
+		else {
+			Speech.speak("Notify Interval: none selected");
+		}
+	}//GEN-LAST:event_m_cbNotifyIntervalFocusGained
+
+	private void m_chkNotifyFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_chkNotifyFocusGained
+		Speech.speak("Notify checkbox" + ((m_chkNotify.isSelected() ? " checked" : " not checked")));
+	}//GEN-LAST:event_m_chkNotifyFocusGained
+
+	private void m_btnPlayNoteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_btnPlayNoteFocusGained
+		Speech.speak("Play Note Button");
+	}//GEN-LAST:event_m_btnPlayNoteFocusGained
+
+	private void m_cbInstrumentNoteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteItemStateChanged
+		if (m_cbInstrumentNote.getSelectedItem() != null) {
+			Speech.speak("Note: " + m_cbInstrumentNote.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Note: none selected");
+		}
+	}//GEN-LAST:event_m_cbInstrumentNoteItemStateChanged
+
+	private void m_cbInstrumentNoteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteFocusGained
+		if (m_cbInstrumentNote.getSelectedItem() != null) {
+			Speech.speak("Note: " + m_cbInstrumentNote.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Note: none selected");
+		}
+	}//GEN-LAST:event_m_cbInstrumentNoteFocusGained
+	
+	private void m_cbInstrumentTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeItemStateChanged
+		if (m_cbInstrumentType.getSelectedItem() != null) {
+			Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Instrument: none selected");
+		}
+	}//GEN-LAST:event_m_cbInstrumentTypeItemStateChanged
+	
 	private void m_cbInstrumentTypeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeFocusGained
-		Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
+		if (m_cbInstrumentType.getSelectedItem() != null) {
+			Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Instrument: none selected");
+		}
 	}//GEN-LAST:event_m_cbInstrumentTypeFocusGained
 
 	private void m_txtInstructionsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtInstructionsKeyPressed
@@ -543,6 +627,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}//GEN-LAST:event_m_cbNotifyIntervalActionPerformed
 
 	private void m_chkNotifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_chkNotifyActionPerformed
+		Speech.speak("Notify checkbox" + ((m_chkNotify.isSelected() ? " checked" : " not checked")));
 		setIntervalNotifyLength(Long.parseLong((String)m_cbNotifyInterval.getSelectedItem()) * 1000);
 		setIntervalNotifyEnabled(m_chkNotify.isSelected());
 	}//GEN-LAST:event_m_chkNotifyActionPerformed
