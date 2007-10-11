@@ -331,6 +331,10 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_txtNoteHeardFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_txtNoteHeardKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
@@ -341,6 +345,10 @@
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_txtInstructionsFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_txtInstructionsKeyPressed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -435,7 +443,9 @@
             </Property>
           </Properties>
           <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="m_cbInstrumentTypeItemStateChanged"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_cbInstrumentTypeActionPerformed"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_cbInstrumentTypeFocusGained"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">

@@ -39,7 +39,7 @@ public class PitchAnalyzer {
 		// Build freq to pitch map for pitches 0-PITCH_RANGE
 		for(int i=0; i<PITCH_RANGE; i++) {
 			// Uses standard equation for calculating pitch in pitch space
-			m_pitchFreqMap[i] = 440.0 * Math.pow(2.0,((double)i-69.0)/12.0);
+			m_pitchFreqMap[i] = 440.0f * Math.pow(2.0f,(((double)i) - 69.0f)/12.0f);
 			// Assign name as reference to basePitchNameMap
 			m_pitchNameMap[i] = basePitchNameMap[ (i + 3) % 12 ];
 			// Debug
@@ -55,11 +55,11 @@ public class PitchAnalyzer {
 		int nameIndex;
 		
 		// Find the closest note by using the standard equation for calculating pitch
-		pitch = 69 + 12 * (Math.log10(sampleValue/440.0)/Math.log10(2));
+		pitch = 69.0f + 12.0f * (Math.log10(sampleValue/440.0f)/Math.log10(2.0f));
 		nameIndex = (int)Math.round(pitch);
 		
 		// Set bounds for nameIndex so that we don't have array-out-of-bounds exception
-		if(nameIndex < 0 || nameIndex > PITCH_RANGE-1) {
+		if(nameIndex < 0 || nameIndex >= PITCH_RANGE) {
 			nameIndex = 0;
 		}
 		
@@ -68,14 +68,13 @@ public class PitchAnalyzer {
 		}
 		else {
 			pitchErrorHz = sampleValue - m_pitchFreqMap[m_currentTuneNote.getPitchNum()];
-			
 		}
-
+		
 		if(nameIndex >= 1) {
-			semitone_difference = m_pitchFreqMap[nameIndex] - m_pitchFreqMap[nameIndex-1]; 
+			semitone_difference = m_pitchFreqMap[nameIndex] - m_pitchFreqMap[nameIndex - 1]; 
 		}
 		else {
-			semitone_difference = m_pitchFreqMap[nameIndex+1] - m_pitchFreqMap[nameIndex];
+			semitone_difference = m_pitchFreqMap[nameIndex + 1] - m_pitchFreqMap[nameIndex];
 		}
 		
 		pitchErrorNormalized = 100.0 * pitchErrorHz / semitone_difference; 

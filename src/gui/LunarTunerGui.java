@@ -282,10 +282,30 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel1.setText("Note Heard");
 
       m_txtNoteHeard.setEditable(false);
+      m_txtNoteHeard.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_txtNoteHeardFocusGained(evt);
+         }
+      });
+      m_txtNoteHeard.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_txtNoteHeardKeyPressed(evt);
+         }
+      });
 
       jLabel2.setText("Instructions");
 
       m_txtInstructions.setEditable(false);
+      m_txtInstructions.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_txtInstructionsFocusGained(evt);
+         }
+      });
+      m_txtInstructions.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_txtInstructionsKeyPressed(evt);
+         }
+      });
 
       org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
       jPanel1.setLayout(jPanel1Layout);
@@ -331,9 +351,19 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Instrument"));
       jLabel3.setText("Type");
 
+      m_cbInstrumentType.addItemListener(new java.awt.event.ItemListener() {
+         public void itemStateChanged(java.awt.event.ItemEvent evt) {
+            m_cbInstrumentTypeItemStateChanged(evt);
+         }
+      });
       m_cbInstrumentType.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             m_cbInstrumentTypeActionPerformed(evt);
+         }
+      });
+      m_cbInstrumentType.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_cbInstrumentTypeFocusGained(evt);
          }
       });
 
@@ -479,6 +509,34 @@ public class LunarTunerGui extends javax.swing.JFrame {
       );
       pack();
    }// </editor-fold>//GEN-END:initComponents
+
+	private void m_cbInstrumentTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeItemStateChanged
+		Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
+	}//GEN-LAST:event_m_cbInstrumentTypeItemStateChanged
+
+	private void m_cbInstrumentTypeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeFocusGained
+		Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
+	}//GEN-LAST:event_m_cbInstrumentTypeFocusGained
+
+	private void m_txtInstructionsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtInstructionsKeyPressed
+		if (evt.getKeyCode() == KeyEvent.VK_H) {
+			Speech.speak("Instructions: " + m_txtInstructions.getText());
+		}
+	}//GEN-LAST:event_m_txtInstructionsKeyPressed
+
+	private void m_txtNoteHeardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtNoteHeardKeyPressed
+		if (evt.getKeyCode() == KeyEvent.VK_H) {
+			Speech.speak("Note Heard: " + m_txtNoteHeard.getText());
+		}
+	}//GEN-LAST:event_m_txtNoteHeardKeyPressed
+
+	private void m_txtInstructionsFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtInstructionsFocusGained
+		Speech.speak("Instructions: " + m_txtInstructions.getText());
+	}//GEN-LAST:event_m_txtInstructionsFocusGained
+
+	private void m_txtNoteHeardFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtNoteHeardFocusGained
+		Speech.speak("Note Heard: " + m_txtNoteHeard.getText());
+	}//GEN-LAST:event_m_txtNoteHeardFocusGained
 
 	private void m_cbNotifyIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalActionPerformed
 		setIntervalNotifyLength(Long.parseLong((String)m_cbNotifyInterval.getSelectedItem()) * 1000);
