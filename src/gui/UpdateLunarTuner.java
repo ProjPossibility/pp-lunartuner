@@ -105,6 +105,7 @@ public class UpdateLunarTuner {
 						LunarTunerGui.updateInterval(noteHeard, noteError, noteInstructions);
 					}
 					else {
+						LunarTunerGui.setInstructions("");
 						LunarTunerGui.updateIntervalTimer(noteHeard, noteError);
 					}
 				}
