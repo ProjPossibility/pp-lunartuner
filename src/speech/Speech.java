@@ -15,9 +15,6 @@ public class Speech {
 	private String m_sentence = null;
 	
 	private Speech() {
-	}
-	
-	public void init() {
 		m_voiceMgr = VoiceManager.getInstance();
 		m_voices = m_voiceMgr.getVoices();
 		
@@ -60,48 +57,28 @@ public class Speech {
 		m_voice.speak("Welcome to Lunar Tuner");
 	}
 	
-	private synchronized void say() throws InterruptedException {
-		wait();
-		if (m_sentence != null) {
-			m_voice.speak(m_sentence);
-			m_sentence = null;
-		}
+	public Voice getVoice() {
+		return m_voice;
 	}
 	
-	private synchronized void trigger(String sentence) {
+	public void setSentence(String sentence) {
 		m_sentence = sentence;
-		System.out.println(m_sentence);
-		notify();
 	}
 	
-	public void updateLoop() {
-		init();
-		
-		try {
-			for (;;) {
-				say();
-			}
-		}
-		catch (InterruptedException e) {
-			ErrorDialog.show(e);
-			System.exit(1);
-		}
-		catch (IllegalMonitorStateException e) {
-			ErrorDialog.show(e);
-			System.exit(1);
-		}
-		catch (IllegalArgumentException e) {
-			ErrorDialog.show(e);
-			System.exit(1);
-		}
+	public String getSentence() {
+		return m_sentence;
 	}
-		
+	
 	public static synchronized void speak(String sentence) {
-		m_instance.trigger(sentence);
+		getInstance().setSentence(sentence);
+		(new Thread() {
+			public void run() {
+				Speech.getInstance().getVoice().speak(Speech.getInstance().getSentence());
+			}
+		}).start();
 	}
 	
 	static public Speech getInstance() {
 		return m_instance;
 	}
-	
 }

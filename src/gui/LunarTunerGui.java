@@ -14,7 +14,8 @@ import misc.InstrumentInfo.*;
 public class LunarTunerGui extends javax.swing.JFrame {
 	static private LunarTunerGui m_instance = new LunarTunerGui();
 	static private ImageIcon m_icon = null;
-
+	static boolean m_enableSpeech = true;
+	
 	// For the interval notifier
 	private boolean m_intervalEnabled = false;
 	private long m_intervalLength;
@@ -117,6 +118,61 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		}
 	}
 	
+	public static void speakCbNotifyInterval() {
+		if (!m_enableSpeech) return;
+		if (m_instance.m_cbNotifyInterval.getSelectedItem() != null) {
+			Speech.speak("Notify Interval: " + m_instance.m_cbNotifyInterval.getSelectedItem().toString() + " seconds");
+		}
+		else {
+			Speech.speak("Notify Interval: none selected");
+		}
+	}
+
+	public static void speakChkNotify() {
+		if (!m_enableSpeech) return;
+		Speech.speak("Notify checkbox" + ((m_instance.m_chkNotify.isSelected() ? " checked" : " not checked")));
+	}
+	
+	public static void speakBtnPlay() {
+		if (!m_enableSpeech) return;
+		Speech.speak("Play Note Button");
+	}
+	
+	public static void speakCbInstrumentNote() {
+		if (!m_enableSpeech) return;
+		if (m_instance.m_cbInstrumentNote.getSelectedItem() != null) {
+			Speech.speak("Note: " + m_instance.m_cbInstrumentNote.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Note: none selected");
+		}
+	}
+	
+	public static void speakCbInstrumentType() {
+		if (!m_enableSpeech) return;
+		if (m_instance.m_cbInstrumentType.getSelectedItem() != null) {
+			Speech.speak("Instrument: " + m_instance.m_cbInstrumentType.getSelectedItem().toString());
+		}
+		else {
+			Speech.speak("Instrument: none selected");
+		}
+	}
+	
+	public static void speakTxtInstructions() {
+		if (!m_enableSpeech) return;
+		Speech.speak("Instructions: " + m_instance.m_txtInstructions.getText());
+	}
+	
+	public static void speakTxtNoteHeard() {
+		if (!m_enableSpeech) return;
+		Speech.speak("Note Heard: " + m_instance.m_txtNoteHeard.getText());
+	}
+	
+	public static void speakChkEnableSpeech() {
+		if (!m_enableSpeech) return;
+		Speech.speak("Enable speech checkbox" + ((m_instance.m_chkEnableSpeech.isSelected() ? " checked" : " not checked")));
+	}
+	
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -155,6 +211,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_chkNotify = new javax.swing.JCheckBox();
       jLabel5 = new javax.swing.JLabel();
       m_cbNotifyInterval = new javax.swing.JComboBox();
+      m_chkEnableSpeech = new javax.swing.JCheckBox();
       m_menuBar = new javax.swing.JMenuBar();
       m_menuFile = new javax.swing.JMenu();
       m_menuItemAbout = new javax.swing.JMenuItem();
@@ -275,6 +332,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       );
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      setTitle("LunarTuner Beta v0.1");
       setLocationByPlatform(true);
       setResizable(false);
       jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Status")));
@@ -459,18 +517,32 @@ public class LunarTunerGui extends javax.swing.JFrame {
          }
       });
 
+      m_chkEnableSpeech.setSelected(true);
+      m_chkEnableSpeech.setText("Enable Speech");
+      m_chkEnableSpeech.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+      m_chkEnableSpeech.setMargin(new java.awt.Insets(0, 0, 0, 0));
+      m_chkEnableSpeech.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            m_chkEnableSpeechActionPerformed(evt);
+         }
+      });
+      m_chkEnableSpeech.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_chkEnableSpeechFocusGained(evt);
+         }
+      });
+
       org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
       jPanel4.setLayout(jPanel4Layout);
       jPanel4Layout.setHorizontalGroup(
          jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
          .add(jPanel4Layout.createSequentialGroup()
-            .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-               .add(m_chkNotify)
-               .add(jPanel4Layout.createSequentialGroup()
-                  .add(jLabel5)
-                  .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                  .add(m_cbNotifyInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+            .add(jLabel5)
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(m_cbNotifyInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addContainerGap(39, Short.MAX_VALUE))
+         .add(m_chkEnableSpeech, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+         .add(m_chkNotify, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
       );
       jPanel4Layout.setVerticalGroup(
          jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -480,7 +552,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                .add(jLabel5)
                .add(m_cbNotifyInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-            .addContainerGap(26, Short.MAX_VALUE))
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(m_chkEnableSpeech)
+            .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
       );
 
       m_menuFile.setText("File");
@@ -522,104 +596,85 @@ public class LunarTunerGui extends javax.swing.JFrame {
          .add(layout.createSequentialGroup()
             .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-               .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-               .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)))
+               .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                  .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                  .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-         .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-         .add(layout.createSequentialGroup()
-            .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 136, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+               .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 136, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+               .add(jPanel3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+               .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+               .add(jPanel4, 0, 106, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
       );
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
+	private void m_chkEnableSpeechFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_chkEnableSpeechFocusGained
+		speakChkEnableSpeech();
+	}//GEN-LAST:event_m_chkEnableSpeechFocusGained
+
+	private void m_chkEnableSpeechActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_chkEnableSpeechActionPerformed
+		m_enableSpeech = m_instance.m_chkEnableSpeech.isSelected();
+		speakChkEnableSpeech();
+	}//GEN-LAST:event_m_chkEnableSpeechActionPerformed
+
 	private void m_cbNotifyIntervalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalItemStateChanged
-		if (m_cbNotifyInterval.getSelectedItem() != null) {
-			Speech.speak("Notify Interval: " + m_cbNotifyInterval.getSelectedItem().toString() + " seconds");
-		}
-		else {
-			Speech.speak("Notify Interval: none selected");
-		}
+		speakCbNotifyInterval();
 	}//GEN-LAST:event_m_cbNotifyIntervalItemStateChanged
 
 	private void m_cbNotifyIntervalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalFocusGained
-		if (m_cbNotifyInterval.getSelectedItem() != null) {
-			Speech.speak("Notify Interval: " + m_cbNotifyInterval.getSelectedItem().toString() + " seconds");
-		}
-		else {
-			Speech.speak("Notify Interval: none selected");
-		}
+		speakCbNotifyInterval();
 	}//GEN-LAST:event_m_cbNotifyIntervalFocusGained
 
 	private void m_chkNotifyFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_chkNotifyFocusGained
-		Speech.speak("Notify checkbox" + ((m_chkNotify.isSelected() ? " checked" : " not checked")));
+		speakChkNotify();
 	}//GEN-LAST:event_m_chkNotifyFocusGained
 
 	private void m_btnPlayNoteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_btnPlayNoteFocusGained
-		Speech.speak("Play Note Button");
+		speakBtnPlay();
 	}//GEN-LAST:event_m_btnPlayNoteFocusGained
 
 	private void m_cbInstrumentNoteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteItemStateChanged
-		if (m_cbInstrumentNote.getSelectedItem() != null) {
-			Speech.speak("Note: " + m_cbInstrumentNote.getSelectedItem().toString());
-		}
-		else {
-			Speech.speak("Note: none selected");
-		}
+		speakCbInstrumentNote();
 	}//GEN-LAST:event_m_cbInstrumentNoteItemStateChanged
 
 	private void m_cbInstrumentNoteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteFocusGained
-		if (m_cbInstrumentNote.getSelectedItem() != null) {
-			Speech.speak("Note: " + m_cbInstrumentNote.getSelectedItem().toString());
-		}
-		else {
-			Speech.speak("Note: none selected");
-		}
+		speakCbInstrumentNote();
 	}//GEN-LAST:event_m_cbInstrumentNoteFocusGained
 	
 	private void m_cbInstrumentTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeItemStateChanged
-		if (m_cbInstrumentType.getSelectedItem() != null) {
-			Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
-		}
-		else {
-			Speech.speak("Instrument: none selected");
-		}
+		speakCbInstrumentType();
 	}//GEN-LAST:event_m_cbInstrumentTypeItemStateChanged
 	
 	private void m_cbInstrumentTypeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeFocusGained
-		if (m_cbInstrumentType.getSelectedItem() != null) {
-			Speech.speak("Instrument: " + m_cbInstrumentType.getSelectedItem().toString());
-		}
-		else {
-			Speech.speak("Instrument: none selected");
-		}
+		speakCbInstrumentType();
 	}//GEN-LAST:event_m_cbInstrumentTypeFocusGained
 
 	private void m_txtInstructionsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtInstructionsKeyPressed
 		if (evt.getKeyCode() == KeyEvent.VK_H) {
-			Speech.speak("Instructions: " + m_txtInstructions.getText());
+			speakTxtInstructions();
 		}
 	}//GEN-LAST:event_m_txtInstructionsKeyPressed
 
 	private void m_txtNoteHeardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtNoteHeardKeyPressed
 		if (evt.getKeyCode() == KeyEvent.VK_H) {
-			Speech.speak("Note Heard: " + m_txtNoteHeard.getText());
+			speakTxtNoteHeard();
 		}
 	}//GEN-LAST:event_m_txtNoteHeardKeyPressed
 
 	private void m_txtInstructionsFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtInstructionsFocusGained
-		Speech.speak("Instructions: " + m_txtInstructions.getText());
+		speakTxtInstructions();
 	}//GEN-LAST:event_m_txtInstructionsFocusGained
 
 	private void m_txtNoteHeardFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtNoteHeardFocusGained
-		Speech.speak("Note Heard: " + m_txtNoteHeard.getText());
+		speakTxtNoteHeard();
 	}//GEN-LAST:event_m_txtNoteHeardFocusGained
 
 	private void m_cbNotifyIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalActionPerformed
@@ -627,9 +682,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}//GEN-LAST:event_m_cbNotifyIntervalActionPerformed
 
 	private void m_chkNotifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_chkNotifyActionPerformed
-		Speech.speak("Notify checkbox" + ((m_chkNotify.isSelected() ? " checked" : " not checked")));
 		setIntervalNotifyLength(Long.parseLong((String)m_cbNotifyInterval.getSelectedItem()) * 1000);
 		setIntervalNotifyEnabled(m_chkNotify.isSelected());
+		speakChkNotify();
 	}//GEN-LAST:event_m_chkNotifyActionPerformed
 
 	private void m_menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_menuItemExitActionPerformed
@@ -684,14 +739,15 @@ public class LunarTunerGui extends javax.swing.JFrame {
 			}
 		};
 
+		/*
 		Thread speechThread = new Thread() {
 			public void run() {
 				Speech.getInstance().updateLoop();
 			}
 		};
-		
+		*/
 		updateThread.start();
-		speechThread.start();
+		//speechThread.start();
 	}
 	
    // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -720,6 +776,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
    private javax.swing.JComboBox m_cbInstrumentNote;
    private javax.swing.JComboBox m_cbInstrumentType;
    private javax.swing.JComboBox m_cbNotifyInterval;
+   private javax.swing.JCheckBox m_chkEnableSpeech;
    private javax.swing.JCheckBox m_chkNotify;
    private javax.swing.JDialog m_dlgAbout;
    private javax.swing.JDialog m_dlgHelp;
