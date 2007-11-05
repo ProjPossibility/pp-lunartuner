@@ -8,6 +8,10 @@
         <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="m_dlgAboutWindowClosed"/>
+        <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="m_dlgAboutWindowActivated"/>
+      </Events>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -27,13 +31,13 @@
                   <Component id="jLabel8" max="32767" attributes="1"/>
                   <EmptySpace min="-2" pref="202" max="-2" attributes="0"/>
               </Group>
-              <Component id="jTextField1" alignment="0" pref="623" max="32767" attributes="0"/>
+              <Component id="m_txtAbout" alignment="0" pref="623" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jTextField1" min="-2" max="-2" attributes="0"/>
+                  <Component id="m_txtAbout" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel8" min="-2" pref="16" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -76,7 +80,7 @@
         <Component class="javax.swing.JLabel" name="jLabel9">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="htp://www.projectpossibility.org"/>
+            <Property name="text" type="java.lang.String" value="http://www.projectpossibility.org"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel10">
@@ -112,7 +116,7 @@
             <Property name="text" type="java.lang.String" value="To get involved or learn more about Project Possibility, please visit http://projectpossibility.org"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="jTextField1">
+        <Component class="javax.swing.JTextField" name="m_txtAbout">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="null" type="code"/>
@@ -128,8 +132,8 @@
             </Property>
           </Properties>
           <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="LunarTuner v0.1&#xa;Brought to you by Project Possibility&#xa;htp://www.projectpossibility.org&#xa;Developers&#xa;Marc Allen &lt;allen.marc@gmail.com&gt;&#xa;Chris Leung &lt;christopher.leung@projectpossibility.org&gt;&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http://projectpossibility.org"/>
-            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner v0.1&#xa;Brought to you by Project Possibility&#xa;htp://www.projectpossibility.org&#xa;Developers&#xa;Marc Allen &lt;allen.marc@gmail.com&gt;&#xa;Chris Leung &lt;christopher.leung@projectpossibility.org&gt;&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http://projectpossibility.org"/>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g."/>
+            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g."/>
           </AccessibilityProperties>
         </Component>
       </SubComponents>
@@ -140,6 +144,10 @@
         <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
+      <Events>
+        <EventHandler event="windowClosed" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="m_dlgHelpWindowClosed"/>
+        <EventHandler event="windowActivated" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="m_dlgHelpWindowActivated"/>
+      </Events>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -157,7 +165,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="404" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="509" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -180,13 +188,12 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTextArea" name="jTextArea1">
+            <Component class="javax.swing.JTextArea" name="m_txtHelp">
               <Properties>
                 <Property name="columns" type="int" value="20"/>
-                <Property name="editable" type="boolean" value="false"/>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.&#xa;&#xa;There are two modes of operation: &quot;Automatic&quot; mode and &quot;Targeted  Note&quot; mode.  In Automatic mode, the tuner will find the closest note to  the pitch it detects and give determine the percent error based on that  note.  In Targeted Note mode, the user will select an instrument using  the &quot;Type&quot; dropdown menu and a note using the &quot;Note&quot; dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the &quot;Instructions&quot; field to tell the user whether to tune up or down.&#xa;&#xa;In both modes, the &quot;Note Heard&quot; field will contain text regarding the  current note and error percentage.&#xa;&#xa;LunarTuner can also play a note on demand. If the user presses the &quot;Play Note&quot; button, the currently selected note will be played through the sound system.&#xa;&#xa;If the user has a screen reader like Jaws and wants to be updated periodically with the current note, they can click the &quot;Enable Notify&quot; checkbox and set the &quot;Notify Interval in Seconds&quot; field to the desired update rate.  A dialog box containing the current note information will  be opened and closed at that interval to trigger to screen reader.  To stop the notifier, press the stop button in the dialog box or click  the &quot;Enable Notify&quot; checkbox again.&#xa;&#xa;LunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X."/>
+                <Property name="text" type="java.lang.String" value="LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.&#xa;&#xa;There are two modes of operation: &quot;Automatic&quot; mode and &quot;Targeted  Note&quot; mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this not is calculated.&#xa;&#xa;In Targeted Note mode, the user will select an instrument using  the &quot;Type&quot; dropdown menu and a note using the &quot;Note&quot; dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the &quot;Instructions&quot; field to tell the user whether to tune up or down.&#xa;&#xa;In both modes, the &quot;Note Heard&quot; field will contain text regarding the  current note and error.&#xa;&#xa;When either the &quot;Note Heard&quot; or &quot;Instructions&quot; fields are focused, pressing H will read the current value.&#xa;&#xa;LunarTuner can also play a note on demand. If the user presses the &quot;Play Note&quot; button, the currently selected note will be played through the sound system.&#xa;&#xa;There are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the &quot;Enable Speech&quot; checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.&#xa;&#xa;To be updated periodically with the status of the current note, set the &quot;Enable Notify&quot; checkbox and set the &quot;Notify Interval in Seconds&quot; field to the desired update rate.  To stop the notifier, click  the &quot;Enable Notify&quot; checkbox again, or press Control-N.&#xa;&#xa;LunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X."/>
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
             </Component>
@@ -200,27 +207,77 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
+          <AccessibilityProperties>
+            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="File"/>
+          </AccessibilityProperties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="m_menuItemAbout">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+A"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="About"/>
               </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="About"/>
+              </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemAboutActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="m_menuItemHelp">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+H"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Help"/>
               </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Help"/>
+              </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemHelpActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="m_menuItemEnableNotify">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+N"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Enable Notify"/>
+              </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Enable Notify"/>
+              </AccessibilityProperties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemEnableNotifyActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="m_menuItemEnableSpeech">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+S"/>
+                </Property>
+                <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" value="Speech Enabled"/>
+              </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Speech Enabled"/>
+              </AccessibilityProperties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemEnableSpeechActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="m_menuItemExit">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Shift+Ctrl+X"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Exit"/>
               </Properties>
+              <AccessibilityProperties>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Exit"/>
+              </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemExitActionPerformed"/>
               </Events>
@@ -497,7 +554,7 @@
                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="m_cbNotifyInterval" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="39" max="32767" attributes="0"/>
+                  <EmptySpace pref="49" max="32767" attributes="0"/>
               </Group>
               <Component id="m_chkEnableSpeech" alignment="0" pref="262" max="32767" attributes="0"/>
               <Component id="m_chkNotify" alignment="0" pref="262" max="32767" attributes="0"/>

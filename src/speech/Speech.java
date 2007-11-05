@@ -1,84 +1,67 @@
 package speech;
 
+import java.util.*;
+
 import com.sun.speech.freetts.*;
+import com.sun.speech.freetts.en.*;
 
 import misc.*;
 
-public class Speech {
+public class Speech extends Thread {
+	static private Speech m_instance = null;
 	
-	static private Speech m_instance = new Speech();
-	
-	private VoiceManager m_voiceMgr = null;
-	private Voice[] m_voices = null;
 	private Voice m_voice = null;
-	private int m_voiceIdx;
-	private String m_sentence = null;
+	private String m_msg = null;
+	private Object m_ready = null;
+	
+	static {
+		m_instance = new Speech();
+	}
 	
 	private Speech() {
-		m_voiceMgr = VoiceManager.getInstance();
-		m_voices = m_voiceMgr.getVoices();
-		
-		if (m_voices.length == 0) {
-			ErrorDialog.show("No FreeTTS voices available");
+		m_voice = VoiceManager.getInstance().getVoice("kevin16");
+		if (m_voice == null) {
+			ErrorDialog.show("Could not load FreeTTS voice");
 			System.exit(1);
 		}
-		
-		int lastGeneralIdx = -1;
-		m_voiceIdx = -1;
-		for (int i = 0; i < m_voices.length; i++) {
-			System.out.println(m_voices[i].getName() + " (" + m_voices[i].getDomain() + " domain)");
-			if (m_voices[i].getDomain() == "general") {
-				lastGeneralIdx = i;
-			}
-			if (m_voices[i].getName() == "kevin16") {
-				m_voiceIdx = i;
-			}
-		}
-		
-		if (m_voiceIdx < 0) {
-			if (lastGeneralIdx < 0) {
-				ErrorDialog.show("No usable voices found");
-				System.exit(1);
-			}
-			else {
-				m_voiceIdx = lastGeneralIdx;
-			}
-		}
-		
-		m_voice = m_voices[m_voiceIdx];
-		
-		System.out.println("Using voice " + m_voice.getName());
-		
-		if (m_voice == null) {
-			ErrorDialog.show("Could not create FreeTTS voice");
-		}
-		
 		m_voice.allocate();
-		m_voice.speak("Welcome to Lunar Tuner");
+		m_ready = new Object();
+		start();
 	}
 	
-	public Voice getVoice() {
-		return m_voice;
-	}
-	
-	public void setSentence(String sentence) {
-		m_sentence = sentence;
-	}
-	
-	public String getSentence() {
-		return m_sentence;
-	}
-	
-	public static synchronized void speak(String sentence) {
-		getInstance().setSentence(sentence);
-		(new Thread() {
-			public void run() {
-				Speech.getInstance().getVoice().speak(Speech.getInstance().getSentence());
+	public void run() {
+		String curMsg = null;
+		for (;;) {
+			synchronized(m_ready) {
+				while(m_msg == null) {
+					try {
+						m_ready.wait();
+					}
+					catch (InterruptedException e) {
+						ErrorDialog.show(e);
+						System.exit(1);
+					}
+				}
+				curMsg = m_msg;
+				m_msg = null;
 			}
-		}).start();
+			m_voice.speak(curMsg);
+		}
 	}
 	
-	static public Speech getInstance() {
-		return m_instance;
+	public void setMessage(String msg) {
+		synchronized(m_ready) {
+			m_voice.getAudioPlayer().cancel();
+			m_msg = msg;
+			m_ready.notify();
+		}
+	}
+	
+	static public void speak(String msg) {
+		m_instance.setMessage(msg);
+	}
+	
+	static public void cancel() {
+		m_instance.m_voice.getAudioPlayer().cancel();
 	}
 }

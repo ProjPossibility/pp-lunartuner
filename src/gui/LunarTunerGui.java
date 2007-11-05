@@ -95,7 +95,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		long now = new Date().getTime();
 		if (now - m_instance.m_intervalLastNotification > m_instance.m_intervalLength 
 				&& m_instance.m_intervalEnabled) {
-			Speech.speak(noteHeard + " " + noteError);
+			if (m_enableSpeech) {
+				Speech.speak(noteHeard + " " + noteError);
+			}
 			m_instance.m_intervalLastNotification = now;
 		}
 	}
@@ -113,9 +115,22 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		long now = new Date().getTime();
 		if (now - m_instance.m_intervalLastNotification > m_instance.m_intervalLength 
 				&& m_instance.m_intervalEnabled) {			
-			Speech.speak(noteInstructions);
+			if (m_enableSpeech) {
+				Speech.speak(noteInstructions);
+			}
 			m_instance.m_intervalLastNotification = now;
 		}
+	}
+	
+	public static void updateSpeechEnable() {
+		m_enableSpeech = m_instance.m_chkEnableSpeech.isSelected();
+		speakChkEnableSpeech();
+	}
+	
+	public static void updateNotifyInterval() {
+		m_instance.setIntervalNotifyLength(Long.parseLong((String)m_instance.m_cbNotifyInterval.getSelectedItem()) * 1000);
+		m_instance.setIntervalNotifyEnabled(m_instance.m_chkNotify.isSelected());
+		speakChkNotify();
 	}
 	
 	public static void speakCbNotifyInterval() {
@@ -158,14 +173,24 @@ public class LunarTunerGui extends javax.swing.JFrame {
 		}
 	}
 	
-	public static void speakTxtInstructions() {
+	public static void speakTxtInstructions(boolean sayTitle) {
 		if (!m_enableSpeech) return;
-		Speech.speak("Instructions: " + m_instance.m_txtInstructions.getText());
+		
+		String msg = m_instance.m_txtInstructions.getText();
+		if (sayTitle) {
+			msg = "Instructions: " + msg;
+		}
+		Speech.speak(msg);
 	}
 	
-	public static void speakTxtNoteHeard() {
+	public static void speakTxtNoteHeard(boolean sayTitle) {
 		if (!m_enableSpeech) return;
-		Speech.speak("Note Heard: " + m_instance.m_txtNoteHeard.getText());
+		
+		String msg = m_instance.m_txtNoteHeard.getText();
+		if (sayTitle) {
+			msg = "Note Heard: " + msg;
+		}
+		Speech.speak(msg);
 	}
 	
 	public static void speakChkEnableSpeech() {
@@ -189,11 +214,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel12 = new javax.swing.JLabel();
       jLabel13 = new javax.swing.JLabel();
       jLabel14 = new javax.swing.JLabel();
-      jTextField1 = new javax.swing.JTextField();
+      m_txtAbout = new javax.swing.JTextField();
       m_dlgHelp = new javax.swing.JDialog();
       jLabel15 = new javax.swing.JLabel();
       jScrollPane1 = new javax.swing.JScrollPane();
-      jTextArea1 = new javax.swing.JTextArea();
+      m_txtHelp = new javax.swing.JTextArea();
       jPanel1 = new javax.swing.JPanel();
       jLabel1 = new javax.swing.JLabel();
       m_txtNoteHeard = new javax.swing.JTextField();
@@ -216,11 +241,22 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_menuFile = new javax.swing.JMenu();
       m_menuItemAbout = new javax.swing.JMenuItem();
       m_menuItemHelp = new javax.swing.JMenuItem();
+      m_menuItemEnableNotify = new javax.swing.JCheckBoxMenuItem();
+      m_menuItemEnableSpeech = new javax.swing.JCheckBoxMenuItem();
       m_menuItemExit = new javax.swing.JMenuItem();
 
       m_dlgAbout.setLocationByPlatform(true);
       m_dlgAbout.setModal(true);
       m_dlgAbout.setResizable(false);
+      m_dlgAbout.addWindowListener(new java.awt.event.WindowAdapter() {
+         public void windowClosed(java.awt.event.WindowEvent evt) {
+            m_dlgAboutWindowClosed(evt);
+         }
+         public void windowActivated(java.awt.event.WindowEvent evt) {
+            m_dlgAboutWindowActivated(evt);
+         }
+      });
+
       jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
       jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resource/logo.jpg")));
 
@@ -229,7 +265,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel8.getAccessibleContext().setAccessibleDescription("");
 
       jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-      jLabel9.setText("htp://www.projectpossibility.org");
+      jLabel9.setText("http://www.projectpossibility.org");
 
       jLabel10.setFont(new java.awt.Font("Lucida Grande", 1, 13));
       jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -247,14 +283,14 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
       jLabel14.setText("To get involved or learn more about Project Possibility, please visit http://projectpossibility.org");
 
-      jTextField1.setBackground(null);
-      jTextField1.setEditable(false);
-      jTextField1.setFont(new java.awt.Font("Lucida Grande", 0, 24));
-      jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-      jTextField1.setText("LunarTuner v0.1");
-      jTextField1.setBorder(null);
-      jTextField1.getAccessibleContext().setAccessibleName("LunarTuner v0.1\nBrought to you by Project Possibility\nhtp://www.projectpossibility.org\nDevelopers\nMarc Allen <allen.marc@gmail.com>\nChris Leung <christopher.leung@projectpossibility.org>\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http://projectpossibility.org");
-      jTextField1.getAccessibleContext().setAccessibleDescription("LunarTuner v0.1\nBrought to you by Project Possibility\nhtp://www.projectpossibility.org\nDevelopers\nMarc Allen <allen.marc@gmail.com>\nChris Leung <christopher.leung@projectpossibility.org>\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http://projectpossibility.org");
+      m_txtAbout.setBackground(null);
+      m_txtAbout.setEditable(false);
+      m_txtAbout.setFont(new java.awt.Font("Lucida Grande", 0, 24));
+      m_txtAbout.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+      m_txtAbout.setText("LunarTuner v0.1");
+      m_txtAbout.setBorder(null);
+      m_txtAbout.getAccessibleContext().setAccessibleName("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.");
+      m_txtAbout.getAccessibleContext().setAccessibleDescription("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot p r o j e c t p o s s i b i l i t y dot o r g.");
 
       org.jdesktop.layout.GroupLayout m_dlgAboutLayout = new org.jdesktop.layout.GroupLayout(m_dlgAbout.getContentPane());
       m_dlgAbout.getContentPane().setLayout(m_dlgAboutLayout);
@@ -273,12 +309,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(193, 193, 193)
             .add(jLabel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(202, 202, 202))
-         .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+         .add(m_txtAbout, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
       );
       m_dlgAboutLayout.setVerticalGroup(
          m_dlgAboutLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
          .add(m_dlgAboutLayout.createSequentialGroup()
-            .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(m_txtAbout, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
             .add(jLabel8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 16, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -300,17 +336,25 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_dlgHelp.setLocationByPlatform(true);
       m_dlgHelp.setModal(true);
       m_dlgHelp.setResizable(false);
+      m_dlgHelp.addWindowListener(new java.awt.event.WindowAdapter() {
+         public void windowClosed(java.awt.event.WindowEvent evt) {
+            m_dlgHelpWindowClosed(evt);
+         }
+         public void windowActivated(java.awt.event.WindowEvent evt) {
+            m_dlgHelpWindowActivated(evt);
+         }
+      });
+
       jLabel15.setFont(new java.awt.Font("Lucida Grande", 1, 24));
       jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
       jLabel15.setText("LunarTuner Help");
 
-      jTextArea1.setColumns(20);
-      jTextArea1.setEditable(false);
-      jTextArea1.setLineWrap(true);
-      jTextArea1.setRows(5);
-      jTextArea1.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the tuner will find the closest note to  the pitch it detects and give determine the percent error based on that  note.  In Targeted Note mode, the user will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error percentage.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nIf the user has a screen reader like Jaws and wants to be updated periodically with the current note, they can click the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  A dialog box containing the current note information will  be opened and closed at that interval to trigger to screen reader.  To stop the notifier, press the stop button in the dialog box or click  the \"Enable Notify\" checkbox again.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
-      jTextArea1.setWrapStyleWord(true);
-      jScrollPane1.setViewportView(jTextArea1);
+      m_txtHelp.setColumns(20);
+      m_txtHelp.setLineWrap(true);
+      m_txtHelp.setRows(5);
+      m_txtHelp.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this not is calculated.\n\nIn Targeted Note mode, the user will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error.\n\nWhen either the \"Note Heard\" or \"Instructions\" fields are focused, pressing H will read the current value.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nThere are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the \"Enable Speech\" checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.\n\nTo be updated periodically with the status of the current note, set the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  To stop the notifier, click  the \"Enable Notify\" checkbox again, or press Control-N.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
+      m_txtHelp.setWrapStyleWord(true);
+      jScrollPane1.setViewportView(m_txtHelp);
 
       org.jdesktop.layout.GroupLayout m_dlgHelpLayout = new org.jdesktop.layout.GroupLayout(m_dlgHelp.getContentPane());
       m_dlgHelp.getContentPane().setLayout(m_dlgHelpLayout);
@@ -327,7 +371,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
          .add(m_dlgHelpLayout.createSequentialGroup()
             .add(jLabel15)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
             .addContainerGap())
       );
 
@@ -540,7 +584,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jLabel5)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
             .add(m_cbNotifyInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap(39, Short.MAX_VALUE))
+            .addContainerGap(49, Short.MAX_VALUE))
          .add(m_chkEnableSpeech, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
          .add(m_chkNotify, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
       );
@@ -558,6 +602,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       );
 
       m_menuFile.setText("File");
+      m_menuItemAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
       m_menuItemAbout.setText("About");
       m_menuItemAbout.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -566,7 +611,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
       });
 
       m_menuFile.add(m_menuItemAbout);
+      m_menuItemAbout.getAccessibleContext().setAccessibleDescription("About");
 
+      m_menuItemHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
       m_menuItemHelp.setText("Help");
       m_menuItemHelp.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -575,7 +622,32 @@ public class LunarTunerGui extends javax.swing.JFrame {
       });
 
       m_menuFile.add(m_menuItemHelp);
+      m_menuItemHelp.getAccessibleContext().setAccessibleDescription("Help");
 
+      m_menuItemEnableNotify.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+      m_menuItemEnableNotify.setText("Enable Notify");
+      m_menuItemEnableNotify.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            m_menuItemEnableNotifyActionPerformed(evt);
+         }
+      });
+
+      m_menuFile.add(m_menuItemEnableNotify);
+      m_menuItemEnableNotify.getAccessibleContext().setAccessibleDescription("Enable Notify");
+
+      m_menuItemEnableSpeech.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+      m_menuItemEnableSpeech.setSelected(true);
+      m_menuItemEnableSpeech.setText("Speech Enabled");
+      m_menuItemEnableSpeech.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            m_menuItemEnableSpeechActionPerformed(evt);
+         }
+      });
+
+      m_menuFile.add(m_menuItemEnableSpeech);
+      m_menuItemEnableSpeech.getAccessibleContext().setAccessibleDescription("Speech Enabled");
+
+      m_menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
       m_menuItemExit.setText("Exit");
       m_menuItemExit.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -584,8 +656,10 @@ public class LunarTunerGui extends javax.swing.JFrame {
       });
 
       m_menuFile.add(m_menuItemExit);
+      m_menuItemExit.getAccessibleContext().setAccessibleDescription("Exit");
 
       m_menuBar.add(m_menuFile);
+      m_menuFile.getAccessibleContext().setAccessibleDescription("File");
 
       setJMenuBar(m_menuBar);
 
@@ -616,13 +690,42 @@ public class LunarTunerGui extends javax.swing.JFrame {
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
+	private void m_menuItemEnableNotifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_menuItemEnableNotifyActionPerformed
+		m_chkNotify.setSelected(!m_chkNotify.isSelected());
+		updateNotifyInterval();
+	}//GEN-LAST:event_m_menuItemEnableNotifyActionPerformed
+
+	private void m_menuItemEnableSpeechActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_menuItemEnableSpeechActionPerformed
+		m_chkEnableSpeech.setSelected(!m_chkEnableSpeech.isSelected());
+		updateSpeechEnable();
+	}//GEN-LAST:event_m_menuItemEnableSpeechActionPerformed
+
+	private void m_dlgHelpWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_m_dlgHelpWindowActivated
+		if (m_enableSpeech) {
+			Speech.speak(m_txtHelp.getText());
+		}
+	}//GEN-LAST:event_m_dlgHelpWindowActivated
+
+	private void m_dlgAboutWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_m_dlgAboutWindowActivated
+		if (m_enableSpeech) {
+			Speech.speak(m_txtAbout.getAccessibleContext().getAccessibleDescription());
+		}
+	}//GEN-LAST:event_m_dlgAboutWindowActivated
+
+	private void m_dlgAboutWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_m_dlgAboutWindowClosed
+		Speech.cancel();
+	}//GEN-LAST:event_m_dlgAboutWindowClosed
+
+	private void m_dlgHelpWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_m_dlgHelpWindowClosed
+		Speech.cancel();
+	}//GEN-LAST:event_m_dlgHelpWindowClosed
+
 	private void m_chkEnableSpeechFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_chkEnableSpeechFocusGained
 		speakChkEnableSpeech();
 	}//GEN-LAST:event_m_chkEnableSpeechFocusGained
 
 	private void m_chkEnableSpeechActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_chkEnableSpeechActionPerformed
-		m_enableSpeech = m_instance.m_chkEnableSpeech.isSelected();
-		speakChkEnableSpeech();
+		updateSpeechEnable();
 	}//GEN-LAST:event_m_chkEnableSpeechActionPerformed
 
 	private void m_cbNotifyIntervalItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalItemStateChanged
@@ -659,22 +762,22 @@ public class LunarTunerGui extends javax.swing.JFrame {
 
 	private void m_txtInstructionsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtInstructionsKeyPressed
 		if (evt.getKeyCode() == KeyEvent.VK_H) {
-			speakTxtInstructions();
+			speakTxtInstructions(false);
 		}
 	}//GEN-LAST:event_m_txtInstructionsKeyPressed
 
 	private void m_txtNoteHeardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtNoteHeardKeyPressed
 		if (evt.getKeyCode() == KeyEvent.VK_H) {
-			speakTxtNoteHeard();
+			speakTxtNoteHeard(false);			
 		}
 	}//GEN-LAST:event_m_txtNoteHeardKeyPressed
 
 	private void m_txtInstructionsFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtInstructionsFocusGained
-		speakTxtInstructions();
+		speakTxtInstructions(true);
 	}//GEN-LAST:event_m_txtInstructionsFocusGained
 
 	private void m_txtNoteHeardFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtNoteHeardFocusGained
-		speakTxtNoteHeard();
+		speakTxtNoteHeard(true);
 	}//GEN-LAST:event_m_txtNoteHeardFocusGained
 
 	private void m_cbNotifyIntervalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalActionPerformed
@@ -682,9 +785,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}//GEN-LAST:event_m_cbNotifyIntervalActionPerformed
 
 	private void m_chkNotifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_chkNotifyActionPerformed
-		setIntervalNotifyLength(Long.parseLong((String)m_cbNotifyInterval.getSelectedItem()) * 1000);
-		setIntervalNotifyEnabled(m_chkNotify.isSelected());
-		speakChkNotify();
+		updateNotifyInterval();
 	}//GEN-LAST:event_m_chkNotifyActionPerformed
 
 	private void m_menuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_menuItemExitActionPerformed
@@ -738,16 +839,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
 				UpdateLunarTuner.getInstance().updateLoop();
 			}
 		};
-
-		/*
-		Thread speechThread = new Thread() {
-			public void run() {
-				Speech.getInstance().updateLoop();
-			}
-		};
-		*/
+		
 		updateThread.start();
-		//speechThread.start();
 	}
 	
    // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -770,8 +863,6 @@ public class LunarTunerGui extends javax.swing.JFrame {
    private javax.swing.JPanel jPanel3;
    private javax.swing.JPanel jPanel4;
    private javax.swing.JScrollPane jScrollPane1;
-   private javax.swing.JTextArea jTextArea1;
-   private javax.swing.JTextField jTextField1;
    private javax.swing.JButton m_btnPlayNote;
    private javax.swing.JComboBox m_cbInstrumentNote;
    private javax.swing.JComboBox m_cbInstrumentType;
@@ -784,8 +875,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
    private javax.swing.JMenuBar m_menuBar;
    private javax.swing.JMenu m_menuFile;
    private javax.swing.JMenuItem m_menuItemAbout;
+   private javax.swing.JCheckBoxMenuItem m_menuItemEnableNotify;
+   private javax.swing.JCheckBoxMenuItem m_menuItemEnableSpeech;
    private javax.swing.JMenuItem m_menuItemExit;
    private javax.swing.JMenuItem m_menuItemHelp;
+   private javax.swing.JTextField m_txtAbout;
+   private javax.swing.JTextArea m_txtHelp;
    private javax.swing.JTextField m_txtInstructions;
    private javax.swing.JTextField m_txtNoteHeard;
    // End of variables declaration//GEN-END:variables

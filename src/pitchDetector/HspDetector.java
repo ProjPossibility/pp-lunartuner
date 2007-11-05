@@ -132,7 +132,7 @@ public class HspDetector extends PitchDetector {
 		
 		//setPitch(m_freqScale[maxIdx]);
 		setPitch(calcRunAvg(m_freqScale[maxIdx]));
-		System.out.println(getPitch() + "/" + m_fftRes);
+		//System.out.println(getPitch() + "/" + m_fftRes);
 	}
 	
 	double calcRunAvg(double curPitch) {
