@@ -740,14 +740,14 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	private void m_menuItemEnableSpeechStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemEnableSpeechStateChanged
 		m_speechChangeCtr = !m_speechChangeCtr;
 		if (m_speechChangeCtr) {
-			Speech.speak("Enable Speech: " + (m_menuItemEnableSpeech.isSelected() ? "on" : "off"));
+			Speech.speak("Speech: " + (m_menuItemEnableSpeech.isSelected() ? "On" : "Off"));
 		}
 	}//GEN-LAST:event_m_menuItemEnableSpeechStateChanged
 
 	private void m_menuItemEnableNotifyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemEnableNotifyStateChanged
 		m_notifyChangeCtr = !m_notifyChangeCtr;
 		if (m_notifyChangeCtr) {
-			Speech.speak("Enable Notify: " + (m_menuItemEnableNotify.isSelected() ? "on" : "off"));
+			Speech.speak("Notify: " + (m_menuItemEnableNotify.isSelected() ? "On" : "Off"));
 		}
 	}//GEN-LAST:event_m_menuItemEnableNotifyStateChanged
 
