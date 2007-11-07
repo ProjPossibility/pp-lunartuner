@@ -824,7 +824,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}//GEN-LAST:event_m_btnPlayNoteFocusGained
 
 	private void m_cbInstrumentNoteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteItemStateChanged
-		speakCbInstrumentNote();
+		if (m_cbInstrumentNote.hasFocus()) {
+			speakCbInstrumentNote();
+		}
 	}//GEN-LAST:event_m_cbInstrumentNoteItemStateChanged
 
 	private void m_cbInstrumentNoteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteFocusGained
