@@ -9,7 +9,7 @@ public class HspDetector extends PitchDetector {
 	final private int HARMONICS = 7;
 	final private int SAMPLE_AVG = 5;
 	final private double FREQ_MIN = 70.0;
-	final private double FREQ_MAX = 2500.0;
+	final private double FREQ_MAX = 10000.0;
 	
 	private double[] m_sample = null;
 	private double[] m_fft = null;
@@ -132,7 +132,7 @@ public class HspDetector extends PitchDetector {
 		
 		//setPitch(m_freqScale[maxIdx]);
 		setPitch(calcRunAvg(m_freqScale[maxIdx]));
-		//System.out.println(getPitch() + "/" + m_fftRes);
+		System.out.println(getPitch() + "/" + m_fftRes);
 	}
 	
 	double calcRunAvg(double curPitch) {

@@ -12,6 +12,8 @@ import misc.*;
 import misc.InstrumentInfo.*;
 
 public class LunarTunerGui extends javax.swing.JFrame {
+	static final int SPEAK_KEY = KeyEvent.VK_SHIFT;
+
 	static private LunarTunerGui m_instance = new LunarTunerGui();
 	static private ImageIcon m_icon = null;
 	static boolean m_enableSpeech = true;
@@ -222,10 +224,12 @@ public class LunarTunerGui extends javax.swing.JFrame {
       jLabel13 = new javax.swing.JLabel();
       jLabel14 = new javax.swing.JLabel();
       m_txtAbout = new javax.swing.JTextField();
+      m_btnAboutDone = new javax.swing.JButton();
       m_dlgHelp = new javax.swing.JDialog();
       jLabel15 = new javax.swing.JLabel();
       jScrollPane1 = new javax.swing.JScrollPane();
       m_txtHelp = new javax.swing.JTextArea();
+      m_btnHelpDone = new javax.swing.JButton();
       jPanel1 = new javax.swing.JPanel();
       jLabel1 = new javax.swing.JLabel();
       m_txtNoteHeard = new javax.swing.JTextField();
@@ -296,8 +300,31 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_txtAbout.setHorizontalAlignment(javax.swing.JTextField.CENTER);
       m_txtAbout.setText("LunarTuner v0.1");
       m_txtAbout.setBorder(null);
+      m_txtAbout.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_txtAboutFocusGained(evt);
+         }
+      });
+
       m_txtAbout.getAccessibleContext().setAccessibleName("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
       m_txtAbout.getAccessibleContext().setAccessibleDescription("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
+
+      m_btnAboutDone.setText("Done");
+      m_btnAboutDone.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            m_btnAboutDoneActionPerformed(evt);
+         }
+      });
+      m_btnAboutDone.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_btnAboutDoneFocusGained(evt);
+         }
+      });
+      m_btnAboutDone.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_btnAboutDoneKeyPressed(evt);
+         }
+      });
 
       org.jdesktop.layout.GroupLayout m_dlgAboutLayout = new org.jdesktop.layout.GroupLayout(m_dlgAbout.getContentPane());
       m_dlgAbout.getContentPane().setLayout(m_dlgAboutLayout);
@@ -317,6 +344,10 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jLabel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(202, 202, 202))
          .add(m_txtAbout, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)
+         .add(m_dlgAboutLayout.createSequentialGroup()
+            .add(270, 270, 270)
+            .add(m_btnAboutDone)
+            .addContainerGap(278, Short.MAX_VALUE))
       );
       m_dlgAboutLayout.setVerticalGroup(
          m_dlgAboutLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -338,6 +369,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jLabel14)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
             .add(jLabel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(m_btnAboutDone)
             .addContainerGap())
       );
       m_dlgHelp.setLocationByPlatform(true);
@@ -360,9 +393,32 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_txtHelp.setEditable(false);
       m_txtHelp.setLineWrap(true);
       m_txtHelp.setRows(5);
-      m_txtHelp.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this note is calculated.\n\nIn Targeted Note mode, the user will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error.\n\nWhen either the \"Note Heard\" or \"Instructions\" fields are focused, pressing H will read the current value.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nThere are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the \"Enable Speech\" checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.\n\nTo be updated periodically with the status of the current note, set the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  To stop the notifier, click  the \"Enable Notify\" checkbox again, or press Control-N.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
+      m_txtHelp.setText("LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.\n\nThere are two modes of operation: \"Automatic\" mode and \"Targeted  Note\" mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this note is calculated.\n\nIn Targeted Note mode, the user will select an instrument using  the \"Type\" dropdown menu and a note using the \"Note\" dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the \"Instructions\" field to tell the user whether to tune up or down.\n\nIn both modes, the \"Note Heard\" field will contain text regarding the  current note and error.\n\nLunarTuner can also play a note on demand. If the user presses the \"Play Note\" button, the currently selected note will be played through the sound system.\n\nThere are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the \"Enable Speech\" checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.\n\nTo be updated periodically with the status of the current note, set the \"Enable Notify\" checkbox and set the \"Notify Interval in Seconds\" field to the desired update rate.  To stop the notifier, click  the \"Enable Notify\" checkbox again, or press Control-N.\n\nWhen any field is focused, pressing Shift will read the current value.\n\nLunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X.");
       m_txtHelp.setWrapStyleWord(true);
+      m_txtHelp.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_txtHelpFocusGained(evt);
+         }
+      });
+
       jScrollPane1.setViewportView(m_txtHelp);
+
+      m_btnHelpDone.setText("Done");
+      m_btnHelpDone.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            m_btnHelpDoneActionPerformed(evt);
+         }
+      });
+      m_btnHelpDone.addFocusListener(new java.awt.event.FocusAdapter() {
+         public void focusGained(java.awt.event.FocusEvent evt) {
+            m_btnHelpDoneFocusGained(evt);
+         }
+      });
+      m_btnHelpDone.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_btnHelpDoneKeyPressed(evt);
+         }
+      });
 
       org.jdesktop.layout.GroupLayout m_dlgHelpLayout = new org.jdesktop.layout.GroupLayout(m_dlgHelp.getContentPane());
       m_dlgHelp.getContentPane().setLayout(m_dlgHelpLayout);
@@ -373,14 +429,20 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(24, 24, 24)
             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 568, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .add(20, 20, 20))
+         .add(org.jdesktop.layout.GroupLayout.TRAILING, m_dlgHelpLayout.createSequentialGroup()
+            .addContainerGap(272, Short.MAX_VALUE)
+            .add(m_btnHelpDone)
+            .add(265, 265, 265))
       );
       m_dlgHelpLayout.setVerticalGroup(
          m_dlgHelpLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
          .add(m_dlgHelpLayout.createSequentialGroup()
             .add(jLabel15)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
-            .addContainerGap())
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 493, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+            .add(m_btnHelpDone)
+            .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
       );
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -476,6 +538,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_cbInstrumentTypeFocusGained(evt);
          }
       });
+      m_cbInstrumentType.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_cbInstrumentTypeKeyPressed(evt);
+         }
+      });
 
       jLabel4.setText("Note");
 
@@ -494,6 +561,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_cbInstrumentNoteFocusGained(evt);
          }
       });
+      m_cbInstrumentNote.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_cbInstrumentNoteKeyPressed(evt);
+         }
+      });
 
       m_btnPlayNote.setText("Play Note");
       m_btnPlayNote.addActionListener(new java.awt.event.ActionListener() {
@@ -504,6 +576,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
       m_btnPlayNote.addFocusListener(new java.awt.event.FocusAdapter() {
          public void focusGained(java.awt.event.FocusEvent evt) {
             m_btnPlayNoteFocusGained(evt);
+         }
+      });
+      m_btnPlayNote.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_btnPlayNoteKeyPressed(evt);
          }
       });
 
@@ -549,6 +626,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_chkNotifyFocusGained(evt);
          }
       });
+      m_chkNotify.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_chkNotifyKeyPressed(evt);
+         }
+      });
 
       jLabel5.setText("Notify Interval in seconds");
 
@@ -569,6 +651,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_cbNotifyIntervalFocusGained(evt);
          }
       });
+      m_cbNotifyInterval.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_cbNotifyIntervalKeyPressed(evt);
+         }
+      });
 
       m_chkEnableSpeech.setSelected(true);
       m_chkEnableSpeech.setText("Enable Speech");
@@ -584,6 +671,11 @@ public class LunarTunerGui extends javax.swing.JFrame {
             m_chkEnableSpeechFocusGained(evt);
          }
       });
+      m_chkEnableSpeech.addKeyListener(new java.awt.event.KeyAdapter() {
+         public void keyPressed(java.awt.event.KeyEvent evt) {
+            m_chkEnableSpeechKeyPressed(evt);
+         }
+      });
 
       org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
       jPanel4.setLayout(jPanel4Layout);
@@ -593,9 +685,9 @@ public class LunarTunerGui extends javax.swing.JFrame {
             .add(jLabel5)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
             .add(m_cbNotifyInterval, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap(59, Short.MAX_VALUE))
-         .add(m_chkEnableSpeech, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-         .add(m_chkNotify, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+            .addContainerGap(39, Short.MAX_VALUE))
+         .add(m_chkEnableSpeech, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+         .add(m_chkNotify, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
       );
       jPanel4Layout.setVerticalGroup(
          jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -668,7 +760,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
 
       m_menuItemEnableSpeech.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
       m_menuItemEnableSpeech.setSelected(true);
-      m_menuItemEnableSpeech.setText("Speech Enabled");
+      m_menuItemEnableSpeech.setText("Enable Speech");
       m_menuItemEnableSpeech.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             m_menuItemEnableSpeechActionPerformed(evt);
@@ -681,7 +773,7 @@ public class LunarTunerGui extends javax.swing.JFrame {
       });
 
       m_menuFile.add(m_menuItemEnableSpeech);
-      m_menuItemEnableSpeech.getAccessibleContext().setAccessibleDescription("Speech Enabled");
+      m_menuItemEnableSpeech.getAccessibleContext().setAccessibleDescription("Enable Speech");
 
       m_menuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
       m_menuItemExit.setText("Exit");
@@ -711,15 +803,14 @@ public class LunarTunerGui extends javax.swing.JFrame {
          .add(layout.createSequentialGroup()
             .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-               .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                  .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))))
+               .add(jPanel1, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+               .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
             .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 136, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -731,42 +822,127 @@ public class LunarTunerGui extends javax.swing.JFrame {
       pack();
    }// </editor-fold>//GEN-END:initComponents
 
+	private void m_btnAboutDoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_btnAboutDoneActionPerformed
+		m_dlgAbout.setVisible(false);
+	}//GEN-LAST:event_m_btnAboutDoneActionPerformed
+
+	private void m_btnAboutDoneFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_btnAboutDoneFocusGained
+		if (!m_enableSpeech) return;
+		Speech.speak("Done Button");
+	}//GEN-LAST:event_m_btnAboutDoneFocusGained
+
+	private void m_txtAboutFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtAboutFocusGained
+		if (m_enableSpeech) {
+			Speech.speak(m_txtAbout.getAccessibleContext().getAccessibleDescription());
+		}
+	}//GEN-LAST:event_m_txtAboutFocusGained
+
+	private void m_btnAboutDoneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_btnAboutDoneKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			if (!m_enableSpeech) return;
+			Speech.speak("Done Button");
+		}
+	}//GEN-LAST:event_m_btnAboutDoneKeyPressed
+
+	private void m_txtHelpFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_txtHelpFocusGained
+		if (!m_enableSpeech) return;
+		Speech.speak(m_txtHelp.getText());
+	}//GEN-LAST:event_m_txtHelpFocusGained
+
+	private void m_btnHelpDoneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_btnHelpDoneKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			if (!m_enableSpeech) return;
+			Speech.speak("Done Button");
+		}
+	}//GEN-LAST:event_m_btnHelpDoneKeyPressed
+
+	private void m_btnHelpDoneFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_m_btnHelpDoneFocusGained
+		if (!m_enableSpeech) return;
+		Speech.speak("Done Button");
+	}//GEN-LAST:event_m_btnHelpDoneFocusGained
+
+	private void m_btnHelpDoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_btnHelpDoneActionPerformed
+		m_dlgHelp.setVisible(false);
+	}//GEN-LAST:event_m_btnHelpDoneActionPerformed
+
+	private void m_chkEnableSpeechKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_chkEnableSpeechKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakChkEnableSpeech();
+		}
+	}//GEN-LAST:event_m_chkEnableSpeechKeyPressed
+
+	private void m_cbNotifyIntervalKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_cbNotifyIntervalKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakCbNotifyInterval();
+		}
+	}//GEN-LAST:event_m_cbNotifyIntervalKeyPressed
+
+	private void m_chkNotifyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_chkNotifyKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakChkNotify();
+		}
+	}//GEN-LAST:event_m_chkNotifyKeyPressed
+
+	private void m_btnPlayNoteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_btnPlayNoteKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakBtnPlay();
+		}
+	}//GEN-LAST:event_m_btnPlayNoteKeyPressed
+
+	private void m_cbInstrumentNoteKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_cbInstrumentNoteKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakCbInstrumentNote();
+		}
+	}//GEN-LAST:event_m_cbInstrumentNoteKeyPressed
+
+	private void m_cbInstrumentTypeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_cbInstrumentTypeKeyPressed
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			speakCbInstrumentType();
+		}
+	}//GEN-LAST:event_m_cbInstrumentTypeKeyPressed
+
 	private void m_menuItemExitStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemExitStateChanged
 		m_exitChangeCtr = !m_exitChangeCtr;
 		if (m_exitChangeCtr) {
-			Speech.speak("Exit");
+			if (!m_enableSpeech) return;
+			Speech.speak("File Menu: Exit");
 		}
 	}//GEN-LAST:event_m_menuItemExitStateChanged
 
 	private void m_menuItemEnableSpeechStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemEnableSpeechStateChanged
 		m_speechChangeCtr = !m_speechChangeCtr;
 		if (m_speechChangeCtr) {
-			Speech.speak("Speech: " + (m_menuItemEnableSpeech.isSelected() ? "On" : "Off"));
+			if (!m_enableSpeech) return;
+			Speech.speak("File Menu: Enable Speech Checkbox: " + (m_menuItemEnableSpeech.isSelected() ? "Awn" : "Off"));
 		}
 	}//GEN-LAST:event_m_menuItemEnableSpeechStateChanged
 
 	private void m_menuItemEnableNotifyStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemEnableNotifyStateChanged
 		m_notifyChangeCtr = !m_notifyChangeCtr;
 		if (m_notifyChangeCtr) {
-			Speech.speak("Notify: " + (m_menuItemEnableNotify.isSelected() ? "On" : "Off"));
+			if (!m_enableSpeech) return;
+			Speech.speak("File Menu: Enable Notify Checkbox: " + (m_menuItemEnableNotify.isSelected() ? "Awn" : "Off"));
 		}
 	}//GEN-LAST:event_m_menuItemEnableNotifyStateChanged
 
 	private void m_menuItemAboutStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemAboutStateChanged
 		m_aboutChangeCtr = !m_aboutChangeCtr;
 		if (m_aboutChangeCtr) {
-			Speech.speak("About");
+			if (!m_enableSpeech) return;
+			Speech.speak("File Menu: About");
 		}
 	}//GEN-LAST:event_m_menuItemAboutStateChanged
 
 	private void m_menuItemHelpStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuItemHelpStateChanged
 		m_helpChangeCtr = !m_helpChangeCtr;
 		if (m_helpChangeCtr) {
-			Speech.speak("Help");
+			if (!m_enableSpeech) return;
+			Speech.speak("File Menu: Help");
 		}
 	}//GEN-LAST:event_m_menuItemHelpStateChanged
 
 	private void m_menuFileStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_m_menuFileStateChanged
+		if (!m_enableSpeech) return;
 		Speech.speak("File Menu");
 	}//GEN-LAST:event_m_menuFileStateChanged
 
@@ -843,13 +1019,18 @@ public class LunarTunerGui extends javax.swing.JFrame {
 	}//GEN-LAST:event_m_cbInstrumentTypeFocusGained
 
 	private void m_txtInstructionsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtInstructionsKeyPressed
-		if (evt.getKeyCode() == KeyEvent.VK_H) {
-			speakTxtInstructions(false);
+		if (evt.getKeyCode() == SPEAK_KEY) {
+			if (m_txtInstructions.getText().trim().length() == 0) {
+				speakTxtInstructions(true);
+			}
+			else {
+				speakTxtInstructions(false);
+			}
 		}
 	}//GEN-LAST:event_m_txtInstructionsKeyPressed
 
 	private void m_txtNoteHeardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_m_txtNoteHeardKeyPressed
-		if (evt.getKeyCode() == KeyEvent.VK_H) {
+		if (evt.getKeyCode() == SPEAK_KEY) {
 			speakTxtNoteHeard(false);			
 		}
 	}//GEN-LAST:event_m_txtNoteHeardKeyPressed
@@ -945,6 +1126,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
    private javax.swing.JPanel jPanel3;
    private javax.swing.JPanel jPanel4;
    private javax.swing.JScrollPane jScrollPane1;
+   private javax.swing.JButton m_btnAboutDone;
+   private javax.swing.JButton m_btnHelpDone;
    private javax.swing.JButton m_btnPlayNote;
    private javax.swing.JComboBox m_cbInstrumentNote;
    private javax.swing.JComboBox m_cbInstrumentType;

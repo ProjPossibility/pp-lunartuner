@@ -32,6 +32,11 @@
                   <EmptySpace min="-2" pref="202" max="-2" attributes="0"/>
               </Group>
               <Component id="m_txtAbout" alignment="0" pref="623" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="270" max="-2" attributes="0"/>
+                  <Component id="m_btnAboutDone" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="278" max="32767" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -54,6 +59,8 @@
                   <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel6" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="m_btnAboutDone" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -135,6 +142,19 @@
             <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
             <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
           </AccessibilityProperties>
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_txtAboutFocusGained"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="m_btnAboutDone">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Done"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_btnAboutDoneActionPerformed"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_btnAboutDoneFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_btnAboutDoneKeyPressed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -158,6 +178,11 @@
                   <Component id="jScrollPane1" min="-2" pref="568" max="-2" attributes="0"/>
                   <EmptySpace min="20" pref="20" max="20" attributes="0"/>
               </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="272" max="32767" attributes="0"/>
+                  <Component id="m_btnHelpDone" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="265" max="-2" attributes="0"/>
+              </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -165,8 +190,10 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jLabel15" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="509" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="493" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="m_btnHelpDone" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -194,12 +221,25 @@
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="lineWrap" type="boolean" value="true"/>
                 <Property name="rows" type="int" value="5"/>
-                <Property name="text" type="java.lang.String" value="LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.&#xa;&#xa;There are two modes of operation: &quot;Automatic&quot; mode and &quot;Targeted  Note&quot; mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this note is calculated.&#xa;&#xa;In Targeted Note mode, the user will select an instrument using  the &quot;Type&quot; dropdown menu and a note using the &quot;Note&quot; dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the &quot;Instructions&quot; field to tell the user whether to tune up or down.&#xa;&#xa;In both modes, the &quot;Note Heard&quot; field will contain text regarding the  current note and error.&#xa;&#xa;When either the &quot;Note Heard&quot; or &quot;Instructions&quot; fields are focused, pressing H will read the current value.&#xa;&#xa;LunarTuner can also play a note on demand. If the user presses the &quot;Play Note&quot; button, the currently selected note will be played through the sound system.&#xa;&#xa;There are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the &quot;Enable Speech&quot; checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.&#xa;&#xa;To be updated periodically with the status of the current note, set the &quot;Enable Notify&quot; checkbox and set the &quot;Notify Interval in Seconds&quot; field to the desired update rate.  To stop the notifier, click  the &quot;Enable Notify&quot; checkbox again, or press Control-N.&#xa;&#xa;LunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X."/>
+                <Property name="text" type="java.lang.String" value="LunarTuner is an accessible instrument tuning software, designed to be usable by the blind community.  It is also useful as a general purpose tuner.&#xa;&#xa;There are two modes of operation: &quot;Automatic&quot; mode and &quot;Targeted  Note&quot; mode.  In Automatic mode, the software will examine the current pitch and find the note closest to it.  The percentage error relative to this note is calculated.&#xa;&#xa;In Targeted Note mode, the user will select an instrument using  the &quot;Type&quot; dropdown menu and a note using the &quot;Note&quot; dropdown menu.   The tuner will then determine the percent error based on the target note,  and will use the &quot;Instructions&quot; field to tell the user whether to tune up or down.&#xa;&#xa;In both modes, the &quot;Note Heard&quot; field will contain text regarding the  current note and error.&#xa;&#xa;LunarTuner can also play a note on demand. If the user presses the &quot;Play Note&quot; button, the currently selected note will be played through the sound system.&#xa;&#xa;There are several options for screen reader access.  LunarTuner has a built in screen reader based on the FreeTTS software package.  This feature can be turned on and off using the &quot;Enable Speech&quot; checkbox, or by pressing Control-S.  External screenreaders such as Jaws are also usable with LunarTuner.&#xa;&#xa;To be updated periodically with the status of the current note, set the &quot;Enable Notify&quot; checkbox and set the &quot;Notify Interval in Seconds&quot; field to the desired update rate.  To stop the notifier, click  the &quot;Enable Notify&quot; checkbox again, or press Control-N.&#xa;&#xa;When any field is focused, pressing Shift will read the current value.&#xa;&#xa;LunarTuner requires Java 1.5+ and has been tested on Windows 2000/XP and Mac OS/X."/>
                 <Property name="wrapStyleWord" type="boolean" value="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_txtHelpFocusGained"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="m_btnHelpDone">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Done"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_btnHelpDoneActionPerformed"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_btnHelpDoneFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_btnHelpDoneKeyPressed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Menu class="javax.swing.JMenuBar" name="m_menuBar">
@@ -267,10 +307,10 @@
                   <KeyStroke key="Ctrl+S"/>
                 </Property>
                 <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Speech Enabled"/>
+                <Property name="text" type="java.lang.String" value="Enable Speech"/>
               </Properties>
               <AccessibilityProperties>
-                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Speech Enabled"/>
+                <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="Enable Speech"/>
               </AccessibilityProperties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_menuItemEnableSpeechActionPerformed"/>
@@ -321,19 +361,17 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="jPanel4" max="32767" attributes="1"/>
-                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jPanel1" min="0" max="32767" attributes="1"/>
-                      <Component id="jPanel3" alignment="0" pref="274" max="32767" attributes="1"/>
-                  </Group>
+                  <Component id="jPanel1" min="0" max="32767" attributes="1"/>
+                  <Component id="jPanel3" alignment="0" pref="274" max="32767" attributes="1"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
               <Group type="102" alignment="0" attributes="1">
                   <Component id="jPanel1" min="-2" pref="136" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -518,6 +556,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="m_cbInstrumentTypeItemStateChanged"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_cbInstrumentTypeActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_cbInstrumentTypeFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_cbInstrumentTypeKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel4">
@@ -535,6 +574,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="m_cbInstrumentNoteItemStateChanged"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_cbInstrumentNoteActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_cbInstrumentNoteFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_cbInstrumentNoteKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="m_btnPlayNote">
@@ -544,6 +584,7 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_btnPlayNoteActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_btnPlayNoteFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_btnPlayNoteKeyPressed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -564,10 +605,10 @@
                   <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="m_cbNotifyInterval" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="59" max="32767" attributes="0"/>
+                  <EmptySpace pref="39" max="32767" attributes="0"/>
               </Group>
-              <Component id="m_chkEnableSpeech" alignment="0" pref="272" max="32767" attributes="0"/>
-              <Component id="m_chkNotify" alignment="0" pref="272" max="32767" attributes="0"/>
+              <Component id="m_chkEnableSpeech" alignment="0" pref="262" max="32767" attributes="0"/>
+              <Component id="m_chkNotify" alignment="0" pref="262" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -602,6 +643,7 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_chkNotifyActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_chkNotifyFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_chkNotifyKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel5">
@@ -629,6 +671,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="m_cbNotifyIntervalItemStateChanged"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_cbNotifyIntervalActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_cbNotifyIntervalFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_cbNotifyIntervalKeyPressed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="m_chkEnableSpeech">
@@ -647,6 +690,7 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="m_chkEnableSpeechActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_chkEnableSpeechFocusGained"/>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="m_chkEnableSpeechKeyPressed"/>
           </Events>
         </Component>
       </SubComponents>
