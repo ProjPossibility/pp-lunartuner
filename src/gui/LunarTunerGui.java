@@ -306,8 +306,8 @@ public class LunarTunerGui extends javax.swing.JFrame {
          }
       });
 
-      m_txtAbout.getAccessibleContext().setAccessibleName("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
-      m_txtAbout.getAccessibleContext().setAccessibleDescription("LunarTuner version 0 point 1.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
+      m_txtAbout.getAccessibleContext().setAccessibleName("LunarTuner version 0 point 2.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
+      m_txtAbout.getAccessibleContext().setAccessibleDescription("LunarTuner version 0 point 2.\nBrought to you by Project Possibility.\nhttp colon slash slash w w w  dot project possibility dot o r g.\nPlease contact us with suggestions, features, and new accessible software project ideas!\nTo get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g.");
 
       m_btnAboutDone.setText("Done");
       m_btnAboutDone.addActionListener(new java.awt.event.ActionListener() {
@@ -446,9 +446,10 @@ public class LunarTunerGui extends javax.swing.JFrame {
       );
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-      setTitle("LunarTuner Beta v0.1");
+      setTitle("LunarTuner Beta v0.2");
       setLocationByPlatform(true);
       setResizable(false);
+      getAccessibleContext().setAccessibleDescription("LunarTuner Beta v0.2");
       jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder("Status")));
       jPanel1.setName("Status");
       jLabel1.setText("Note Heard");

@@ -139,8 +139,8 @@
             </Property>
           </Properties>
           <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
-            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner version 0 point 1.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="LunarTuner version 0 point 2.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
+            <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner version 0 point 2.&#xa;Brought to you by Project Possibility.&#xa;http colon slash slash w w w  dot project possibility dot o r g.&#xa;Please contact us with suggestions, features, and new accessible software project ideas!&#xa;To get involved or learn more about Project Possibility, please visit http colon slash slash w w w  dot project possibility dot o r g."/>
           </AccessibilityProperties>
           <Events>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="m_txtAboutFocusGained"/>
@@ -339,10 +339,13 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
-    <Property name="title" type="java.lang.String" value="LunarTuner Beta v0.1"/>
+    <Property name="title" type="java.lang.String" value="LunarTuner Beta v0.2"/>
     <Property name="locationByPlatform" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
+  <AccessibilityProperties>
+    <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value="LunarTuner Beta v0.2"/>
+  </AccessibilityProperties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="m_menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
